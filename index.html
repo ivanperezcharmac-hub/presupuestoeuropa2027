@@ -238,6 +238,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
 
   /* Grids de 2 col → 1 col */
   .cgrid{grid-template-columns:1fr}
+  #sec-resumen .card+div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
   .egrid{grid-template-columns:1fr 1fr}
   .costs-grid{grid-template-columns:1fr}
   .thg{grid-template-columns:1fr}
@@ -379,16 +380,60 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
       <div class="sh">Resumen general</div>
       <div class="ss">Tu presupuesto completo. Se actualiza en tiempo real al cargar datos en cada sección.</div>
 
+      <!-- TOTAL GENERAL -->
       <div class="hero">
         <div class="hl">Total estimado del viaje</div>
         <div class="ht" id="h-tot">$0</div>
         <div class="hsu" id="h-sub">Completá los datos en cada sección para ver el desglose</div>
-        <div class="hg">
-          <div class="sm"><div class="sv" id="h-intl">$0</div><div class="sl">Vuelos int'l</div></div>
-          <div class="sm"><div class="sv" id="h-eu">$0</div><div class="sl">Vuelos internos</div></div>
-          <div class="sm"><div class="sv" id="h-aloj">$0</div><div class="sl">Alojamiento</div></div>
-          <div class="sm"><div class="sv" id="h-gasto">$0</div><div class="sl">Gastos diarios</div></div>
+      </div>
+
+      <!-- DOS BLOQUES -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px">
+
+        <!-- BLOQUE 1: BASE -->
+        <div class="card" style="margin-bottom:0;border-top:3px solid var(--navy)">
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px">✈ Presupuesto base</div>
+          <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy);margin-bottom:12px" id="h-base">$0</div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Vuelos internacionales</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-intl">$0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Vuelos internos EU</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-eu">$0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Alojamiento</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-aloj">$0</span>
+            </div>
+          </div>
         </div>
+
+        <!-- BLOQUE 2: DESTINO -->
+        <div class="card" style="margin-bottom:0;border-top:3px solid var(--grn)">
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px">🌍 Gastos en destino</div>
+          <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--grn);margin-bottom:12px" id="h-destino">$0</div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Comida & transporte</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-gasto">$0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Excursiones</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-exc">$0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Compras</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-compras">$0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Extras</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-extra">$0</span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
 
@@ -996,13 +1041,20 @@ function recalc(){
   },0);
   const grand=intlT+euT+alojT+gastoT+extraT+excT+comprasT;
 
+  const baseT=intlT+euT+alojT;
+  const destinoT=gastoT+excT+comprasT+extraT;
   document.getElementById("sb-tot").textContent=f$(grand);
   document.getElementById("h-tot").textContent=f$(grand);
   document.getElementById("h-sub").textContent=grand>0?`${f$(grand/26)} por día · 26 días`:"Completá los datos en cada sección";
+  document.getElementById("h-base").textContent=f$(baseT);
+  document.getElementById("h-destino").textContent=f$(destinoT);
   document.getElementById("h-intl").textContent=f$(intlT);
   document.getElementById("h-eu").textContent=f$(euT);
   document.getElementById("h-aloj").textContent=f$(alojT);
   document.getElementById("h-gasto").textContent=f$(gastoT);
+  document.getElementById("h-exc").textContent=f$(excT);
+  document.getElementById("h-compras").textContent=f$(comprasT);
+  document.getElementById("h-extra").textContent=f$(extraT);
   document.getElementById("tot-intl").textContent=f$(intlT);
   document.getElementById("tot-eu").textContent=f$(euT);
 
