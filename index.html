@@ -336,6 +336,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
     <button class="ni" onclick="go('alojamientos')"><span class="ni-ic">🛏</span>Alojamientos</button>
     <button class="ni" onclick="go('extras')"><span class="ni-ic">🎭</span>Extras</button>
     <button class="ni" onclick="go('excursiones')"><span class="ni-ic">🗺</span>Excursiones</button>
+    <button class="ni" onclick="go('compras')"><span class="ni-ic">🛍</span>Compras</button>
     <div class="ngl" style="margin-top:10px">Referencia</div>
     <button class="ni" onclick="go('costos')"><span class="ni-ic">💶</span>Costos por ciudad</button>
     <div class="ngl" style="margin-top:10px">Opciones</div>
@@ -482,6 +483,18 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
       </div>
     </div>
 
+
+    <!-- ══ COMPRAS ══ -->
+    <div class="sec" id="sec-compras">
+      <div class="sh">Compras del viaje</div>
+      <div class="ss">Ropa, tecnología, souvenirs y todo lo que planeás comprar. Organizalo por categoría.</div>
+      <div class="tip">💡 Cargá lo que tenés en mente comprar, con un presupuesto estimado. Se suma al total del viaje.</div>
+      <div id="compras-c"></div>
+      <div class="card" style="margin-top:4px">
+        <div class="ch"><div class="ct">💰 Total compras</div><div class="cv" id="tot-compras">$0</div></div>
+      </div>
+    </div>
+
     <!-- ══ COSTOS POR CIUDAD ══ -->
     <div class="sec" id="sec-costos">
       <div class="sh">Costos de referencia por ciudad</div>
@@ -624,6 +637,15 @@ const COSTS=[
 ];
 
 // ══════════════════════════ STATE ════════════════════════════════════
+// ── COMPRAS DATA ──
+const COMPRAS_CATS=[
+  {id:"ropa",      ic:"👗", label:"Ropa & Calzado",    suggestions:["Zapatillas Nike/Adidas","Zara","H&M","Mango","Abrigo","Ropa deportiva"]},
+  {id:"tech",      ic:"💻", label:"Tecnología",         suggestions:["AirPods","Cargador MagSafe","Accesorios iPhone","Kindle","Cámara GoPro"]},
+  {id:"souvenirs", ic:"🧸", label:"Souvenirs & Regalos",suggestions:["Imanes","Llaveros","Postal","Libro de fotos","Artesanías locales"]},
+  {id:"belleza",   ic:"💄", label:"Belleza & Perfumes",  suggestions:["Perfume duty free","Cremas","Maquillaje","Colonia"]},
+  {id:"otros",     ic:"📦", label:"Otros",               suggestions:["Libros","Vinos / licores","Comida local","Decoración"]}
+];
+
 // ── EXCURSIONES DATA ──
 const EXCURSION_CITIES=[
   {id:"madrid",    name:"Madrid",    flag:"🇪🇸", suggestions:["Museo del Prado","Museo Reina Sofía","Palacio Real","Tour flamenco","Estadio Bernabéu"]},
@@ -634,7 +656,7 @@ const EXCURSION_CITIES=[
   {id:"londres",   name:"Londres",   flag:"🇬🇧", suggestions:["Tower of London","Harry Potter Studio","London Eye","Kensington Palace","Tour Notting Hill"]}
 ];
 
-let S={prices:{},cities:{},accom:{},extras:{},excursiones:{},notas:""};
+let S={prices:{},cities:{},accom:{},extras:{},excursiones:{},compras:{},notas:""};
 let saveTimer=null;
 let isSaving=false;
 
@@ -645,6 +667,7 @@ function initState(){
   if(!S.accom||typeof S.accom!=="object")S.accom={};
   if(!S.extras||typeof S.extras!=="object")S.extras={};
   if(!S.excursiones||typeof S.excursiones!=="object")S.excursiones={};
+  if(!S.compras||typeof S.compras!=="object")S.compras={};
   if(typeof S.notas!=="string")S.notas="";
   CITIES.forEach(c=>{
     if(!S.cities[c.id])S.cities[c.id]={checkIn:c.defIn,checkOut:c.defOut,hotel:0,daily:0};
@@ -967,10 +990,11 @@ function recalc(){
     alojT+=days*hotel;gastoT+=days*daily;daysUsed+=days;
   });
   const extraT=EXTRAS.reduce((s,ex)=>s+ge(ex.id),0);
+  const comprasT=COMPRAS_CATS.reduce((s,cat)=>s+(S.compras&&S.compras[cat.id]?S.compras[cat.id].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0),0);
   const excT=EXCURSION_CITIES.reduce((s,city)=>{
     return s+(S.excursiones&&S.excursiones[city.id]?S.excursiones[city.id].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0);
   },0);
-  const grand=intlT+euT+alojT+gastoT+extraT+excT;
+  const grand=intlT+euT+alojT+gastoT+extraT+excT+comprasT;
 
   document.getElementById("sb-tot").textContent=f$(grand);
   document.getElementById("h-tot").textContent=f$(grand);
@@ -989,7 +1013,8 @@ function recalc(){
     {l:"Alojamiento",s:daysUsed>0?`${daysUsed} noches en total`:"Sin fechas asignadas",v:alojT},
     {l:"Gastos diarios",s:"Comidas, transport, actividades",v:gastoT},
     {l:"Extras e imprevistos",s:"Seguro, museos, shopping, tours",v:extraT},
-    {l:"Excursiones & Experiencias",s:"Actividades por ciudad",v:excT}
+    {l:"Excursiones & Experiencias",s:"Actividades por ciudad",v:excT},
+    {l:"Compras del viaje",s:"Ropa, tech, souvenirs y más",v:comprasT}
   ];
   document.getElementById("sum-rows").innerHTML=rows.map(r=>`
     <div class="sr">
@@ -1033,6 +1058,7 @@ function recalc(){
 const TITLES={resumen:"Resumen del viaje",vuelos:"Vuelos",ciudades:"Ciudades y fechas",
   alojamientos:"Opciones de alojamiento",extras:"Gastos extra",
   excursiones:"Excursiones & Experiencias",
+  compras:"Compras del viaje",
   costos:"Costos de referencia por ciudad",estilo:"Personalizar apariencia"};
 
 function go(id){
@@ -1100,6 +1126,72 @@ const toast=msg=>{const t=document.getElementById("toast");t.textContent=msg;t.c
 const f$=n=>n&&!isNaN(n)&&n>0?"$"+Math.round(n).toLocaleString("es-AR"):"$0";
 const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
+
+
+function renderCompras(){
+  const el=document.getElementById("compras-c");
+  if(!el)return;
+  el.innerHTML="";
+  COMPRAS_CATS.forEach(cat=>{
+    const items=S.compras[cat.id]||[];
+    while(items.length<3)items.push({name:"",cost:"",nota:""});
+    S.compras[cat.id]=items;
+    const card=document.createElement("div");card.className="card";
+    const rows=items.map((it,i)=>`
+      <div style="display:grid;grid-template-columns:1fr 100px 1fr;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">Item</div>
+          <input class="ci" type="text" placeholder="${cat.suggestions[i]||'Ej: artículo...'}" value="${esc(it.name)}" data-cat="${cat.id}" data-i="${i}" data-f="name" oninput="onCompra(this)" list="csug-${cat.id}">
+        </div>
+        <div>
+          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">USD</div>
+          <input class="ci" type="number" placeholder="0" min="0" value="${it.cost||''}" data-cat="${cat.id}" data-i="${i}" data-f="cost" oninput="onCompra(this)">
+        </div>
+        <div>
+          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">Ciudad / nota</div>
+          <input class="ci" type="text" placeholder="Ej: Madrid, online..." value="${esc(it.nota)}" data-cat="${cat.id}" data-i="${i}" data-f="nota" oninput="onCompra(this)">
+        </div>
+      </div>`).join("");
+    const catTotal=items.reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+    card.innerHTML=`
+      <div class="ch">
+        <div class="ct">${cat.ic} ${cat.label}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="cv" id="cv-compra-${cat.id}">${f$(catTotal)}</span>
+          <button class="btn btn-g" style="padding:4px 9px;font-size:11px" onclick="addCompraRow('${cat.id}')">+ Agregar</button>
+        </div>
+      </div>
+      <datalist id="csug-${cat.id}">${cat.suggestions.map(s=>`<option value="${s}">`).join("")}</datalist>
+      ${rows}`;
+    el.appendChild(card);
+  });
+  updateComprasTotal();
+}
+
+function updateComprasTotal(){
+  const tot=COMPRAS_CATS.reduce((s,cat)=>{
+    return s+(S.compras[cat.id]||[]).reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0);
+  },0);
+  const te=document.getElementById("tot-compras");if(te)te.textContent=f$(tot);
+}
+
+function addCompraRow(catId){
+  if(!S.compras[catId])S.compras[catId]=[];
+  S.compras[catId].push({name:"",cost:"",nota:""});
+  renderCompras();scheduleSave();
+}
+
+function onCompra(el){
+  const cat=el.dataset.cat,i=parseInt(el.dataset.i),f=el.dataset.f;
+  if(!S.compras[cat])S.compras[cat]=[];
+  if(!S.compras[cat][i])S.compras[cat][i]={name:"",cost:"",nota:""};
+  S.compras[cat][i][f]=el.value;
+  const catTotal=S.compras[cat].reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+  const cv=document.getElementById("cv-compra-"+cat);
+  if(cv)cv.textContent=f$(catTotal);
+  updateComprasTotal();
+  scheduleSave();
+}
 
 function renderExcursiones(){
   const el=document.getElementById("excursiones-c");
@@ -1179,6 +1271,7 @@ function renderAll(){
   renderExtras();
   renderCosts();
   renderExcursiones();
+  renderCompras();
   const n=document.getElementById("notas");if(n)n.value=S.notas||"";
 }
 
