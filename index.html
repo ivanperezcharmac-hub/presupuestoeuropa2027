@@ -335,6 +335,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
     <button class="ni" onclick="go('ciudades')"><span class="ni-ic">🏛</span>Ciudades</button>
     <button class="ni" onclick="go('alojamientos')"><span class="ni-ic">🛏</span>Alojamientos</button>
     <button class="ni" onclick="go('extras')"><span class="ni-ic">🎭</span>Extras</button>
+    <button class="ni" onclick="go('excursiones')"><span class="ni-ic">🗺</span>Excursiones</button>
     <div class="ngl" style="margin-top:10px">Referencia</div>
     <button class="ni" onclick="go('costos')"><span class="ni-ic">💶</span>Costos por ciudad</button>
     <div class="ngl" style="margin-top:10px">Opciones</div>
@@ -466,6 +467,18 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
       <div class="card" style="margin-top:4px">
         <div class="ch"><div class="ct">Notas personales</div></div>
         <textarea id="notas" style="width:100%;min-height:88px;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;background:var(--cream);color:var(--txt);outline:none;resize:vertical;line-height:1.6" placeholder="Links a hoteles, ideas para paseos, recordatorios..." oninput="scheduleSave()"></textarea>
+      </div>
+    </div>
+
+
+    <!-- ══ EXCURSIONES ══ -->
+    <div class="sec" id="sec-excursiones">
+      <div class="sh">Excursiones & Experiencias</div>
+      <div class="ss">Actividades, parques, museos y tours por ciudad. Se suman al total del viaje.</div>
+      <div class="tip">💡 Cargá el costo total estimado por actividad. Podés poner el link de reserva para tenerlo a mano. Todo en USD.</div>
+      <div id="excursiones-c"></div>
+      <div class="card" style="margin-top:4px">
+        <div class="ch"><div class="ct">💰 Total excursiones</div><div class="cv" id="tot-excursiones">$0</div></div>
       </div>
     </div>
 
@@ -611,7 +624,17 @@ const COSTS=[
 ];
 
 // ══════════════════════════ STATE ════════════════════════════════════
-let S={prices:{},cities:{},accom:{},extras:{},notas:""};
+// ── EXCURSIONES DATA ──
+const EXCURSION_CITIES=[
+  {id:"madrid",    name:"Madrid",    flag:"🇪🇸", suggestions:["Museo del Prado","Museo Reina Sofía","Palacio Real","Tour flamenco","Estadio Bernabéu"]},
+  {id:"barcelona", name:"Barcelona", flag:"🇪🇸", suggestions:["Sagrada Família","Park Güell","Camp Nou Tour","Montjuïc","Tour Gótico"]},
+  {id:"roma",      name:"Roma",      flag:"🇮🇹", suggestions:["Coliseo + Foro Romano","Museos Vaticanos","Galería Borghese","Tour Trastevere","Catacumbas"]},
+  {id:"paris",     name:"París",     flag:"🇫🇷", suggestions:["Torre Eiffel","Louvre","Versalles","Crucero Sena","Moulin Rouge"]},
+  {id:"amsterdam", name:"Ámsterdam", flag:"🇳🇱", suggestions:["Van Gogh Museum","Anne Frank House","Crucero canales","Zaanse Schans","Rijksmuseum"]},
+  {id:"londres",   name:"Londres",   flag:"🇬🇧", suggestions:["Tower of London","Harry Potter Studio","London Eye","Kensington Palace","Tour Notting Hill"]}
+];
+
+let S={prices:{},cities:{},accom:{},extras:{},excursiones:{},notas:""};
 let saveTimer=null;
 let isSaving=false;
 
@@ -621,10 +644,12 @@ function initState(){
   if(!S.cities||typeof S.cities!=="object")S.cities={};
   if(!S.accom||typeof S.accom!=="object")S.accom={};
   if(!S.extras||typeof S.extras!=="object")S.extras={};
+  if(!S.excursiones||typeof S.excursiones!=="object")S.excursiones={};
   if(typeof S.notas!=="string")S.notas="";
   CITIES.forEach(c=>{
     if(!S.cities[c.id])S.cities[c.id]={checkIn:c.defIn,checkOut:c.defOut,hotel:0,daily:0};
     if(!S.accom[c.id])S.accom[c.id]={chosen:-1,opts:[empty(),empty(),empty()]};
+    if(!S.excursiones[c.id])S.excursiones[c.id]=[];
   });
 }
 function empty(){return{name:"",type:"",price:"",link:"",zona:"",notes:""};}
@@ -942,7 +967,10 @@ function recalc(){
     alojT+=days*hotel;gastoT+=days*daily;daysUsed+=days;
   });
   const extraT=EXTRAS.reduce((s,ex)=>s+ge(ex.id),0);
-  const grand=intlT+euT+alojT+gastoT+extraT;
+  const excT=EXCURSION_CITIES.reduce((s,city)=>{
+    return s+(S.excursiones&&S.excursiones[city.id]?S.excursiones[city.id].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0);
+  },0);
+  const grand=intlT+euT+alojT+gastoT+extraT+excT;
 
   document.getElementById("sb-tot").textContent=f$(grand);
   document.getElementById("h-tot").textContent=f$(grand);
@@ -960,7 +988,8 @@ function recalc(){
     {l:"Vuelos internos Europa",s:"6 tramos dentro de Europa",v:euT},
     {l:"Alojamiento",s:daysUsed>0?`${daysUsed} noches en total`:"Sin fechas asignadas",v:alojT},
     {l:"Gastos diarios",s:"Comidas, transport, actividades",v:gastoT},
-    {l:"Extras e imprevistos",s:"Seguro, museos, shopping, tours",v:extraT}
+    {l:"Extras e imprevistos",s:"Seguro, museos, shopping, tours",v:extraT},
+    {l:"Excursiones & Experiencias",s:"Actividades por ciudad",v:excT}
   ];
   document.getElementById("sum-rows").innerHTML=rows.map(r=>`
     <div class="sr">
@@ -1003,6 +1032,7 @@ function recalc(){
 // ══════════════════════════ NAV ══════════════════════════════════════
 const TITLES={resumen:"Resumen del viaje",vuelos:"Vuelos",ciudades:"Ciudades y fechas",
   alojamientos:"Opciones de alojamiento",extras:"Gastos extra",
+  excursiones:"Excursiones & Experiencias",
   costos:"Costos de referencia por ciudad",estilo:"Personalizar apariencia"};
 
 function go(id){
@@ -1070,6 +1100,77 @@ const toast=msg=>{const t=document.getElementById("toast");t.textContent=msg;t.c
 const f$=n=>n&&!isNaN(n)&&n>0?"$"+Math.round(n).toLocaleString("es-AR"):"$0";
 const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
+
+function renderExcursiones(){
+  const el=document.getElementById("excursiones-c");
+  if(!el)return;
+  el.innerHTML="";
+  EXCURSION_CITIES.forEach(city=>{
+    const items=S.excursiones[city.id]||[];
+    // ensure 3 slots min
+    while(items.length<3)items.push({name:"",cost:"",link:"",nota:""});
+    S.excursiones[city.id]=items;
+    const card=document.createElement("div");card.className="card";
+    let rows=items.map((it,i)=>`
+      <div style="display:grid;grid-template-columns:1fr 100px 1fr;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">Actividad</div>
+          <input class="ci" type="text" placeholder="Ej: ${city.suggestions[i]||'Actividad'}" value="${esc(it.name)}" data-city="${city.id}" data-i="${i}" data-f="name" oninput="onExc(this)" list="sug-${city.id}">
+        </div>
+        <div>
+          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">USD</div>
+          <input class="ci" type="number" placeholder="0" min="0" value="${it.cost||''}" data-city="${city.id}" data-i="${i}" data-f="cost" oninput="onExc(this)">
+        </div>
+        <div>
+          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">Link / nota</div>
+          <input class="ci" type="text" placeholder="Link o nota..." value="${esc(it.link)}" data-city="${city.id}" data-i="${i}" data-f="link" oninput="onExc(this)">
+        </div>
+      </div>`).join("");
+    const cityTotal=items.reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+    card.innerHTML=`
+      <div class="ch">
+        <div class="ct">${city.flag} ${city.name}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="cv">${f$(cityTotal)}</span>
+          <button class="btn btn-g" style="padding:4px 9px;font-size:11px" onclick="addExcRow('${city.id}')">+ Agregar</button>
+        </div>
+      </div>
+      <datalist id="sug-${city.id}">${city.suggestions.map(s=>`<option value="${s}">`).join("")}</datalist>
+      ${rows}`;
+    el.appendChild(card);
+  });
+  // update total
+  const tot=EXCURSION_CITIES.reduce((s,city)=>{
+    return s+(S.excursiones[city.id]||[]).reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0);
+  },0);
+  const te=document.getElementById("tot-excursiones");
+  if(te)te.textContent=f$(tot);
+}
+
+function addExcRow(cityId){
+  if(!S.excursiones[cityId])S.excursiones[cityId]=[];
+  S.excursiones[cityId].push({name:"",cost:"",link:""});
+  renderExcursiones();
+  scheduleSave();
+}
+
+function onExc(el){
+  const city=el.dataset.city,i=parseInt(el.dataset.i),f=el.dataset.f;
+  if(!S.excursiones[city])S.excursiones[city]=[];
+  if(!S.excursiones[city][i])S.excursiones[city][i]={name:"",cost:"",link:""};
+  S.excursiones[city][i][f]=el.value;
+  // update city total inline
+  const cityTotal=S.excursiones[city].reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+  const card=el.closest(".card");
+  if(card){const cv=card.querySelector(".cv");if(cv)cv.textContent=f$(cityTotal);}
+  // update grand total
+  const tot=EXCURSION_CITIES.reduce((s,c)=>{
+    return s+(S.excursiones[c.id]||[]).reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0);
+  },0);
+  const te=document.getElementById("tot-excursiones");if(te)te.textContent=f$(tot);
+  scheduleSave();
+}
+
 function renderAll(){
   renderFlights(INTL,"intl-c");
   renderFlights(EURO,"eu-c");
@@ -1077,6 +1178,7 @@ function renderAll(){
   renderAccom();
   renderExtras();
   renderCosts();
+  renderExcursiones();
   const n=document.getElementById("notas");if(n)n.value=S.notas||"";
 }
 
@@ -1117,18 +1219,24 @@ const LOGIN_PASS = "1201";
 function checkLogin(){
   const val = document.getElementById("login-input").value;
   if(val === LOGIN_PASS){
-    sessionStorage.setItem(LOGIN_KEY, "1");
-    document.getElementById("login-screen").style.display = "none";
+    sessionStorage.setItem(LOGIN_KEY,"1");
+    const ls=document.getElementById("login-screen");
+    ls.style.transition="opacity .25s";
+    ls.style.opacity="0";
+    setTimeout(()=>ls.style.display="none",250);
   } else {
-    const err = document.getElementById("login-err");
-    err.style.display = "block";
-    document.getElementById("login-input").value = "";
+    const err=document.getElementById("login-err");
+    err.style.display="block";
+    document.getElementById("login-input").value="";
     document.getElementById("login-input").focus();
-    setTimeout(() => err.style.display = "none", 2000);
+    setTimeout(()=>err.style.display="none",2000);
   }
 }
 
-// Enter key
+// Auto-submit al 4to dígito + Enter
+document.getElementById("login-input").addEventListener("input", e => {
+  if(e.target.value.length === LOGIN_PASS.length) checkLogin();
+});
 document.getElementById("login-input").addEventListener("keydown", e => {
   if(e.key === "Enter") checkLogin();
 });
