@@ -356,6 +356,8 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
     <button class="ni" onclick="go('extras')"><span class="ni-ic">🎭</span>Extras</button>
     <button class="ni" onclick="go('excursiones')"><span class="ni-ic">🗺</span>Excursiones</button>
     <button class="ni" onclick="go('compras')"><span class="ni-ic">🛍</span>Compras</button>
+    <button class="ni" onclick="go('itinerario')"><span class="ni-ic">🗓</span>Itinerario</button>
+    <button class="ni" onclick="go('alertas')"><span class="ni-ic">🔔</span>Alertas EUR/USD</button>
     <div class="ngl" style="margin-top:10px">Referencia</div>
     <button class="ni" onclick="go('costos')"><span class="ni-ic">💶</span>Costos por ciudad</button>
     <div class="ngl" style="margin-top:10px">Opciones</div>
@@ -484,8 +486,17 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
       </div>
 
       <div class="card">
-        <div style="font-size:13px;font-weight:600;margin-bottom:11px">Distribución del presupuesto</div>
-        <div id="chart"></div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:16px">Distribución del presupuesto</div>
+        <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap">
+          <div style="position:relative;flex-shrink:0">
+            <svg id="pie-chart" width="180" height="180" viewBox="0 0 180 180"></svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+              <div style="font-size:10px;color:var(--muted);text-align:center" id="pie-label">Total</div>
+              <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;color:var(--navy)" id="pie-value">$0</div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:180px" id="chart"></div>
+        </div>
       </div>
     </div>
 
@@ -572,6 +583,52 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
             <span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--navy)" id="tot-compras">$0</span>
           </div>
         </div>
+      </div>
+    </div>
+
+
+    <!-- ══ ITINERARIO ══ -->
+    <div class="sec" id="sec-itinerario">
+      <div class="sh">Itinerario día a día</div>
+      <div class="ss">Qué hacen cada día del viaje. Se genera automáticamente según las fechas de cada ciudad.</div>
+      <div class="tip">💡 Las fechas se toman de la sección Ciudades. Podés agregar una nota para cada día — qué visitar, dónde comer, reservas.</div>
+      <div id="itinerario-c"></div>
+    </div>
+
+    <!-- ══ ALERTAS ══ -->
+    <div class="sec" id="sec-alertas">
+      <div class="sh">Alertas EUR/USD</div>
+      <div class="ss">Seguimiento del tipo de cambio. Te avisa cuando sube o baja del umbral que configures.</div>
+      <div class="tip">💡 El tipo de cambio se actualiza cada vez que abrís la app. Configurá un rango y te avisamos si se sale de ese rango.</div>
+      <div class="card">
+        <div class="ch"><div class="ct">📈 Tipo de cambio actual</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+          <div style="background:var(--cream);border-radius:var(--rs);padding:14px;text-align:center">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:4px">ACTUAL (hoy)</div>
+            <div style="font-family:'Playfair Display',serif;font-size:28px;color:var(--navy)" id="alerta-actual">—</div>
+          </div>
+          <div style="background:var(--cream);border-radius:var(--rs);padding:14px;text-align:center">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:4px">MÍNIMO alerta</div>
+            <input id="alerta-min" type="number" step="0.01" min="0.5" max="2" placeholder="ej: 1.05"
+              style="width:100%;border:none;background:none;font-family:'Playfair Display',serif;font-size:24px;color:var(--grn);text-align:center;outline:none"
+              oninput="saveAlertas()">
+          </div>
+          <div style="background:var(--cream);border-radius:var(--rs);padding:14px;text-align:center">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:4px">MÁXIMO alerta</div>
+            <input id="alerta-max" type="number" step="0.01" min="0.5" max="2" placeholder="ej: 1.12"
+              style="width:100%;border:none;background:none;font-family:'Playfair Display',serif;font-size:24px;color:var(--red);text-align:center;outline:none"
+              oninput="saveAlertas()">
+          </div>
+        </div>
+        <div id="alerta-msg" style="display:none;padding:12px 16px;border-radius:var(--rs);font-size:13px;font-weight:500;margin-bottom:16px"></div>
+        <div style="font-size:12px;color:var(--muted)">
+          💡 Configurá un mínimo y un máximo. Si el cambio del día cae fuera de ese rango, aparece una alerta en rojo o verde arriba de la app.
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">📊 Impacto en tu presupuesto</div></div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">¿Cuánto cambia tu presupuesto total si el EUR/USD sube o baja?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="impacto-c"></div>
       </div>
     </div>
 
@@ -748,6 +805,8 @@ function initState(){
   if(!S.extras||typeof S.extras!=="object")S.extras={};
   if(!S.excursiones||typeof S.excursiones!=="object")S.excursiones={};
   if(!S.compras||typeof S.compras!=="object")S.compras={};
+  if(!S.itinerario||typeof S.itinerario!=="object")S.itinerario={};
+  if(!S.alertas||typeof S.alertas!=="object")S.alertas={};
   if(typeof S.notas!=="string")S.notas="";
   if(S.eurUsd){const el=document.getElementById('eur-usd');if(el)el.value=S.eurUsd;}
   CITIES.forEach(c=>{
@@ -1151,17 +1210,24 @@ function recalc(){
   const pi=document.getElementById("p-ivan");if(pi)pi.textContent=f$(comprasIvan+shared);
 
   const cats=[
-    {l:"Vuelos int'l",v:intlT,c:"#0f1e35"},{l:"Vuelos EU",v:euT,c:"#2E5F8A"},
-    {l:"Alojamiento",v:alojT,c:"#c9a84c"},{l:"Gastos",v:gastoT,c:"#2d7a4f"},
+    {l:"Vuelos int'l",v:intlT,c:"#0f1e35"},
+    {l:"Vuelos EU",v:euT,c:"#2E5F8A"},
+    {l:"Alojamiento",v:alojT,c:"#c9a84c"},
+    {l:"Gastos diarios",v:gastoT,c:"#2d7a4f"},
+    {l:"Excursiones",v:excT,c:"#e67e22"},
+    {l:"Compras",v:comprasT,c:"#c44d6e"},
     {l:"Extras",v:extraT,c:"#9b59b6"}
   ];
   const mx=Math.max(...cats.map(c=>c.v),1);
+  // Bar chart
   document.getElementById("chart").innerHTML=cats.map(c=>`
-    <div class="bar-row">
-      <div class="bar-l">${c.l}</div>
+    <div class="bar-row" style="cursor:pointer" onmouseenter="pieHighlight('${c.l}',${c.v},'${c.c}')" onmouseleave="pieReset(${grand})">
+      <div class="bar-l" style="font-size:10.5px">${c.l}</div>
       <div class="bar-t"><div class="bar-f" style="width:${(c.v/mx*100).toFixed(1)}%;background:${c.c}"></div></div>
       <div class="bar-v">${f$(c.v)}</div>
     </div>`).join("");
+  // Pie chart
+  drawPie(cats, grand);
 
   let filled=0,total=INTL.length+EURO.length+CITIES.length*3+EXTRAS.length;
   INTL.forEach(f=>{if(gp(f.id)>0)filled++;});
@@ -1185,6 +1251,8 @@ const TITLES={resumen:"Resumen del viaje",vuelos:"Vuelos",ciudades:"Ciudades y f
   alojamientos:"Opciones de alojamiento",extras:"Gastos extra",
   excursiones:"Excursiones & Experiencias",
   compras:"Compras del viaje",
+  itinerario:"Itinerario día a día",
+  alertas:"Alertas de tipo de cambio",
   costos:"Costos de referencia por ciudad",estilo:"Personalizar apariencia"};
 
 function go(id){
@@ -1450,6 +1518,175 @@ function onExc(el){
   scheduleSave();
 }
 
+
+
+// ── ITINERARIO ──
+function renderItinerario(){
+  const el=document.getElementById("itinerario-c");
+  if(!el)return;
+  el.innerHTML="";
+  if(!S.itinerario)S.itinerario={};
+
+  // Generar días por ciudad según fechas
+  CITIES.forEach(city=>{
+    const c=S.cities[city.id];
+    if(!c||!c.checkIn||!c.checkOut)return;
+    const start=new Date(c.checkIn);
+    const end=new Date(c.checkOut);
+    if(isNaN(start)||isNaN(end)||end<=start)return;
+
+    const card=document.createElement("div");card.className="card";
+    let days="";
+    for(let d=new Date(start);d<end;d.setDate(d.getDate()+1)){
+      const key=city.id+"_"+d.toISOString().slice(0,10);
+      if(!S.itinerario[key])S.itinerario[key]="";
+      const dateStr=d.toLocaleDateString("es-AR",{weekday:"short",day:"numeric",month:"short"});
+      days+=`<div style="display:grid;grid-template-columns:100px 1fr;gap:10px;align-items:start;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--txt)">${dateStr}</div>
+          <div style="font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em">Día ${Math.round((d-start)/864e5)+1}</div>
+        </div>
+        <textarea class="an" rows="2" placeholder="¿Qué hacen hoy? Museos, restaurantes, paseos..." data-key="${key}" oninput="onItinerario(this)">${esc(S.itinerario[key])}</textarea>
+      </div>`;
+    }
+    card.innerHTML=`
+      <div class="ch">
+        <div class="ct">${city.flag} ${city.name}</div>
+        <span class="bx bn">${Math.round((end-start)/864e5)} días</span>
+      </div>
+      ${days}`;
+    el.appendChild(card);
+  });
+
+  if(!el.children.length){
+    el.innerHTML=`<div class="card" style="text-align:center;color:var(--muted);padding:32px">
+      Cargá las fechas en la sección Ciudades para ver el itinerario.
+    </div>`;
+  }
+}
+
+function onItinerario(el){
+  if(!S.itinerario)S.itinerario={};
+  S.itinerario[el.dataset.key]=el.value;
+  scheduleSave();
+}
+
+// ── ALERTAS EUR/USD ──
+function saveAlertas(){
+  const mn=parseFloat(document.getElementById("alerta-min")?.value);
+  const mx=parseFloat(document.getElementById("alerta-max")?.value);
+  if(!S.alertas)S.alertas={};
+  if(!isNaN(mn))S.alertas.min=mn;
+  if(!isNaN(mx))S.alertas.max=mx;
+  scheduleSave();
+  checkAlertas();
+}
+
+function checkAlertas(){
+  const rate=getEurUsd();
+  const mn=S.alertas?.min;
+  const mx=S.alertas?.max;
+  const msg=document.getElementById("alerta-msg");
+  const banner=document.getElementById("offline-banner");
+  if(!msg)return;
+
+  let alertMsg="",alertColor="",alertBanner="";
+  if(mn&&rate<mn){
+    alertMsg=`✅ EUR/USD en ${rate.toFixed(4)} — ¡Por debajo de tu mínimo! Buen momento para comprar euros.`;
+    alertColor="var(--grn-bg)";alertBanner="var(--grn)";
+  } else if(mx&&rate>mx){
+    alertMsg=`⚠️ EUR/USD en ${rate.toFixed(4)} — Por encima de tu máximo. El euro está caro.`;
+    alertColor="var(--red-bg)";alertBanner="var(--red)";
+  } else if(mn||mx){
+    alertMsg=`📊 EUR/USD en ${rate.toFixed(4)} — Dentro del rango configurado.`;
+    alertColor="var(--blu-bg)";alertBanner="";
+  }
+
+  if(alertMsg){
+    msg.style.display="block";
+    msg.style.background=alertColor;
+    msg.style.color="var(--txt)";
+    msg.textContent=alertMsg;
+  } else {
+    msg.style.display="none";
+  }
+
+  // Mostrar impacto en presupuesto
+  const impacto=document.getElementById("impacto-c");
+  if(impacto){
+    const scenarios=[
+      {l:"Si EUR sube a 1.15",r:1.15},{l:"Si EUR sube a 1.12",r:1.12},
+      {l:"Hoy",r:rate},{l:"Si EUR baja a 1.05",r:1.05},
+    ];
+    // Calcular comprasT base en EUR
+    const comprasEur=COMPRAS_CATS.reduce((s,cat)=>{
+      return s+["agus","ivan"].reduce((sp,p)=>{
+        return sp+(S.compras&&S.compras[cat.id+"_"+p]?S.compras[cat.id+"_"+p].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0);
+      },0);
+    },0);
+    impacto.innerHTML=scenarios.map(sc=>{
+      const diff=sc.r-rate;
+      const impact=comprasEur*diff;
+      const color=diff>0?"var(--red)":diff<0?"var(--grn)":"var(--navy)";
+      const sign=diff>0?"+":"";
+      return `<div style="background:var(--cream);border-radius:var(--rs);padding:12px;text-align:center">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">${sc.l}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:600;color:${color}">${sc.r===rate?f$(comprasEur*rate):(sign+f$(Math.abs(impact)))}</div>
+        ${sc.r!==rate?`<div style="font-size:9px;color:var(--muted);margin-top:2px">${diff>0?"más caro":"más barato"} en compras</div>`:'<div style="font-size:9px;color:var(--muted)">tasa actual</div>'}
+      </div>`;
+    }).join("");
+  }
+
+  // Actualizar valor actual en la card
+  const actual=document.getElementById("alerta-actual");
+  if(actual)actual.textContent=rate.toFixed(4);
+
+  // Restaurar valores guardados
+  const minEl=document.getElementById("alerta-min");
+  const maxEl=document.getElementById("alerta-max");
+  if(minEl&&S.alertas?.min&&!minEl.value)minEl.value=S.alertas.min;
+  if(maxEl&&S.alertas?.max&&!maxEl.value)maxEl.value=S.alertas.max;
+}
+
+// ── PIE CHART ──
+function drawPie(cats, total){
+  const svg=document.getElementById("pie-chart");
+  if(!svg)return;
+  const cx=90,cy=90,r=78,ri=52;
+  let angle=-Math.PI/2;
+  const paths=[];
+  const validCats=cats.filter(c=>c.v>0);
+  if(!validCats.length){svg.innerHTML='';return;}
+  validCats.forEach((cat,idx)=>{
+    const slice=(cat.v/total)*2*Math.PI;
+    const x1=cx+r*Math.cos(angle),y1=cy+r*Math.sin(angle);
+    const x2=cx+r*Math.cos(angle+slice),y2=cy+r*Math.sin(angle+slice);
+    const xi1=cx+ri*Math.cos(angle),yi1=cy+ri*Math.sin(angle);
+    const xi2=cx+ri*Math.cos(angle+slice),yi2=cy+ri*Math.sin(angle+slice);
+    const large=slice>Math.PI?1:0;
+    const d=`M ${xi1} ${yi1} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${xi2} ${yi2} A ${ri} ${ri} 0 ${large} 0 ${xi1} ${yi1} Z`;
+    paths.push(`<path d="${d}" fill="${cat.c}" stroke="#fff" stroke-width="2" style="cursor:pointer;transition:opacity .15s" onmouseenter="pieHighlight('${cat.l}',${cat.v},'${cat.c}')" onmouseleave="pieReset(${total})" />`);
+    angle+=slice;
+  });
+  svg.innerHTML=paths.join("");
+  document.getElementById("pie-label").textContent="Total";
+  document.getElementById("pie-value").textContent=f$(total);
+}
+
+function pieHighlight(label,val,color){
+  const lbl=document.getElementById("pie-label");
+  const valEl=document.getElementById("pie-value");
+  if(lbl)lbl.textContent=label;
+  if(valEl){valEl.textContent=f$(val);valEl.style.color=color;}
+}
+
+function pieReset(total){
+  const lbl=document.getElementById("pie-label");
+  const valEl=document.getElementById("pie-value");
+  if(lbl)lbl.textContent="Total";
+  if(valEl){valEl.textContent=f$(total);valEl.style.color="var(--navy)";}
+}
+
 function renderAll(){
   renderFlights(INTL,"intl-c");
   renderFlights(EURO,"eu-c");
@@ -1459,6 +1696,7 @@ function renderAll(){
   renderCosts();
   renderExcursiones();
   renderCompras();
+  renderItinerario();
   const n=document.getElementById("notas");if(n)n.value=S.notas||"";
 }
 
@@ -1474,7 +1712,7 @@ function renderAll(){
     restoreTheme();
     renderAll();
     recalc();
-    fetchEurUsd();
+    fetchEurUsd().then(()=>checkAlertas());
     document.getElementById("loading-overlay").style.display="none";
     document.getElementById("app").style.display="flex";
     setSyncStatus("ok","Listo ✓");
