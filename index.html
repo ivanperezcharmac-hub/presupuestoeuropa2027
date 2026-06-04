@@ -1099,11 +1099,17 @@ function recalc(){
   const comprasAgusTotal=COMPRAS_CATS.reduce((s,cat)=>s+(S.compras&&S.compras[cat.id+"_agus"]?S.compras[cat.id+"_agus"].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0),0);
   const comprasIvanTotal=COMPRAS_CATS.reduce((s,cat)=>s+(S.compras&&S.compras[cat.id+"_ivan"]?S.compras[cat.id+"_ivan"].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0),0);
 
-  const mkRow=(l,s,v,indent)=>`
-    <div class="sr" ${indent?'style="padding-left:16px;background:var(--cream);border-radius:var(--rs);margin:2px 0"':''}>
-      <div><div class="srl" style="${indent?'font-size:11.5px;color:var(--muted)':''}">${indent?'↳ ':''} ${l}</div>${s?`<div class="srs">${s}</div>`:''}</div>
-      <div class="srv" style="${indent?'font-size:12px':'''}">${f$(v)}</div>
+  const mkRow=(l,s,v,indent)=>{
+    const indentStyle=indent?'style="padding-left:16px;background:var(--cream);border-radius:var(--rs);margin:2px 0"':'';
+    const lblStyle=indent?'style="font-size:11.5px;color:var(--muted)"':'';
+    const valStyle=indent?'style="font-size:12px"':'';
+    const prefix=indent?'↳ ':'';
+    const sub=s?`<div class="srs">${s}</div>`:'';
+    return `<div class="sr" ${indentStyle}>
+      <div><div class="srl" ${lblStyle}>${prefix}${l}</div>${sub}</div>
+      <div class="srv" ${valStyle}>${f$(v)}</div>
     </div>`;
+  };
 
   const baseRows=[
     mkRow("✈ Vuelo internacional (ida)","BUE → MAD",gp("eze-mad"),false),
