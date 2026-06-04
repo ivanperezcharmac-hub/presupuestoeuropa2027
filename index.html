@@ -1039,7 +1039,11 @@ function recalc(){
     alojT+=days*hotel;gastoT+=days*daily;daysUsed+=days;
   });
   const extraT=EXTRAS.reduce((s,ex)=>s+ge(ex.id),0);
-  const comprasT=COMPRAS_CATS.reduce((s,cat)=>s+(S.compras&&S.compras[cat.id]?S.compras[cat.id].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0),0);
+  const comprasT=COMPRAS_CATS.reduce((s,cat)=>{
+    return s+["agus","ivan"].reduce((sp,p)=>{
+      return sp+(S.compras&&S.compras[cat.id+"_"+p]?S.compras[cat.id+"_"+p].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0);
+    },0);
+  },0);
   const excT=EXCURSION_CITIES.reduce((s,city)=>{
     return s+(S.excursiones&&S.excursiones[city.id]?S.excursiones[city.id].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0);
   },0);
@@ -1188,37 +1192,52 @@ function renderCompras(){
   const el=document.getElementById("compras-c");
   if(!el)return;
   el.innerHTML="";
+  const personas=["agus","ivan"];
+  const personaLabel={"agus":"👩 Agus","ivan":"👨 Ivan"};
+
   COMPRAS_CATS.forEach(cat=>{
-    const items=S.compras[cat.id]||[];
-    while(items.length<3)items.push({name:"",cost:"",nota:""});
-    S.compras[cat.id]=items;
+    // Init state para cada persona
+    personas.forEach(p=>{
+      const key=cat.id+"_"+p;
+      if(!S.compras[key])S.compras[key]=[];
+      while(S.compras[key].length<2)S.compras[key].push({name:"",cost:"",nota:""});
+    });
+
     const card=document.createElement("div");card.className="card";
-    const rows=items.map((it,i)=>`
-      <div style="display:grid;grid-template-columns:1fr 100px 1fr;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div>
-          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">Item</div>
-          <input class="ci" type="text" placeholder="${cat.suggestions[i]||'Ej: artículo...'}" value="${esc(it.name)}" data-cat="${cat.id}" data-i="${i}" data-f="name" oninput="onCompra(this)" list="csug-${cat.id}">
+
+    const cols=personas.map(p=>{
+      const key=cat.id+"_"+p;
+      const items=S.compras[key];
+      const rows=items.map((it,i)=>`
+        <div style="padding:7px 0;border-bottom:1px solid var(--border)">
+          <input class="ci" type="text" placeholder="${cat.suggestions[i]||'Artículo...'}" value="${esc(it.name)}" data-cat="${cat.id}" data-p="${p}" data-i="${i}" data-f="name" oninput="onCompra(this)" list="csug-${cat.id}" style="margin-bottom:5px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+            <input class="ci" type="number" placeholder="USD 0" min="0" value="${it.cost||''}" data-cat="${cat.id}" data-p="${p}" data-i="${i}" data-f="cost" oninput="onCompra(this)">
+            <input class="ci" type="text" placeholder="Ciudad..." value="${esc(it.nota)}" data-cat="${cat.id}" data-p="${p}" data-i="${i}" data-f="nota" oninput="onCompra(this)">
+          </div>
+        </div>`).join("");
+      const pTotal=items.reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+      return `<div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--border)">
+          <span style="font-size:12px;font-weight:600">${personaLabel[p]}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--navy)" id="cv-compra-${cat.id}-${p}">${f$(pTotal)}</span>
         </div>
-        <div>
-          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">USD</div>
-          <input class="ci" type="number" placeholder="0" min="0" value="${it.cost||''}" data-cat="${cat.id}" data-i="${i}" data-f="cost" oninput="onCompra(this)">
-        </div>
-        <div>
-          <div class="all" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px">Ciudad / nota</div>
-          <input class="ci" type="text" placeholder="Ej: Madrid, online..." value="${esc(it.nota)}" data-cat="${cat.id}" data-i="${i}" data-f="nota" oninput="onCompra(this)">
-        </div>
-      </div>`).join("");
-    const catTotal=items.reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+        ${rows}
+        <button class="btn btn-g" style="margin-top:8px;padding:4px 9px;font-size:11px;width:100%" onclick="addCompraRow('${cat.id}','${p}')">+ Agregar</button>
+      </div>`;
+    }).join('<div style="width:1px;background:var(--border);margin:0 12px"></div>');
+
+    const catTotal=personas.reduce((s,p)=>{
+      return s+(S.compras[cat.id+"_"+p]||[]).reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0);
+    },0);
+
     card.innerHTML=`
       <div class="ch">
         <div class="ct">${cat.ic} ${cat.label}</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="cv" id="cv-compra-${cat.id}">${f$(catTotal)}</span>
-          <button class="btn btn-g" style="padding:4px 9px;font-size:11px" onclick="addCompraRow('${cat.id}')">+ Agregar</button>
-        </div>
+        <span class="cv" id="cv-compra-${cat.id}">${f$(catTotal)}</span>
       </div>
       <datalist id="csug-${cat.id}">${cat.suggestions.map(s=>`<option value="${s}">`).join("")}</datalist>
-      ${rows}`;
+      <div style="display:flex;gap:0">${cols}</div>`;
     el.appendChild(card);
   });
   updateComprasTotal();
@@ -1226,23 +1245,34 @@ function renderCompras(){
 
 function updateComprasTotal(){
   const tot=COMPRAS_CATS.reduce((s,cat)=>{
-    return s+(S.compras[cat.id]||[]).reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0);
+    return s+["agus","ivan"].reduce((sp,p)=>{
+      return sp+(S.compras[cat.id+"_"+p]||[]).reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0);
+    },0);
   },0);
   const te=document.getElementById("tot-compras");if(te)te.textContent=f$(tot);
 }
 
-function addCompraRow(catId){
-  if(!S.compras[catId])S.compras[catId]=[];
-  S.compras[catId].push({name:"",cost:"",nota:""});
+function addCompraRow(catId,persona){
+  const key=catId+"_"+persona;
+  if(!S.compras[key])S.compras[key]=[];
+  S.compras[key].push({name:"",cost:"",nota:""});
   renderCompras();scheduleSave();
 }
 
 function onCompra(el){
-  const cat=el.dataset.cat,i=parseInt(el.dataset.i),f=el.dataset.f;
-  if(!S.compras[cat])S.compras[cat]=[];
-  if(!S.compras[cat][i])S.compras[cat][i]={name:"",cost:"",nota:""};
-  S.compras[cat][i][f]=el.value;
-  const catTotal=S.compras[cat].reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+  const cat=el.dataset.cat,p=el.dataset.p,i=parseInt(el.dataset.i),f=el.dataset.f;
+  const key=cat+"_"+p;
+  if(!S.compras[key])S.compras[key]=[];
+  if(!S.compras[key][i])S.compras[key][i]={name:"",cost:"",nota:""};
+  S.compras[key][i][f]=el.value;
+  // update persona subtotal
+  const pTotal=S.compras[key].reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
+  const cvp=document.getElementById("cv-compra-"+cat+"-"+p);
+  if(cvp)cvp.textContent=f$(pTotal);
+  // update cat total
+  const catTotal=["agus","ivan"].reduce((s,pp)=>{
+    return s+(S.compras[cat+"_"+pp]||[]).reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0);
+  },0);
   const cv=document.getElementById("cv-compra-"+cat);
   if(cv)cv.textContent=f$(catTotal);
   updateComprasTotal();
