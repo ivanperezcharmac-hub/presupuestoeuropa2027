@@ -1509,34 +1509,36 @@ const LOGIN_KEY = "eu2027_auth";
 const LOGIN_PASS = "1201";
 
 function checkLogin(){
-  const val = document.getElementById("login-input").value;
-  if(val === LOGIN_PASS){
+  const inp=document.getElementById("login-input");
+  if(!inp)return;
+  const val=inp.value;
+  if(val===LOGIN_PASS){
     sessionStorage.setItem(LOGIN_KEY,"1");
     const ls=document.getElementById("login-screen");
-    ls.style.transition="opacity .25s";
-    ls.style.opacity="0";
-    setTimeout(()=>ls.style.display="none",250);
+    if(ls){ls.style.transition="opacity .25s";ls.style.opacity="0";setTimeout(()=>ls.style.display="none",250);}
   } else {
     const err=document.getElementById("login-err");
-    err.style.display="block";
-    document.getElementById("login-input").value="";
-    document.getElementById("login-input").focus();
-    setTimeout(()=>err.style.display="none",2000);
+    if(err){err.style.display="block";setTimeout(()=>err.style.display="none",2000);}
+    inp.value="";inp.focus();
   }
 }
 
-// Auto-submit al 4to dígito + Enter
-document.getElementById("login-input").addEventListener("input", e => {
-  if(e.target.value.length === LOGIN_PASS.length) checkLogin();
-});
-document.getElementById("login-input").addEventListener("keydown", e => {
-  if(e.key === "Enter") checkLogin();
-});
-
-// Si ya autenticó en esta sesión, ocultar login
-if(sessionStorage.getItem(LOGIN_KEY) === "1"){
-  document.getElementById("login-screen").style.display = "none";
-}
+// Inicializar login al cargar DOM
+(function initLogin(){
+  const inp=document.getElementById("login-input");
+  const ls=document.getElementById("login-screen");
+  if(!inp||!ls)return;
+  // Si ya autenticó, ocultar de una
+  if(sessionStorage.getItem(LOGIN_KEY)==="1"){ls.style.display="none";return;}
+  // Auto-submit al 4to dígito
+  inp.addEventListener("input",e=>{
+    if(e.target.value.length===LOGIN_PASS.length)checkLogin();
+  });
+  inp.addEventListener("keydown",e=>{
+    if(e.key==="Enter")checkLogin();
+  });
+  inp.focus();
+})();
 
 </script>
 </body>
