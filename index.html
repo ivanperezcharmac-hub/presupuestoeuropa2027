@@ -43,7 +43,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--txt);m
 .sb-dot{width:5px;height:5px;border-radius:50%;background:var(--grn)}
 
 /* ── MAIN ── */
-.main{margin-left:228px;flex:1}
+.main{margin-left:228px;flex:1;display:flex;justify-content:center}
 .tbar{background:#fff;border-bottom:1px solid var(--border);padding:0 30px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
 .tb-title{font-size:14.5px;font-weight:500}
 .tb-sub{font-size:11px;color:var(--muted);margin-top:1px}
@@ -72,7 +72,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--txt);m
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── PAGE ── */
-.page{padding:26px 30px;max-width:960px}
+.page{padding:26px 40px;max-width:960px;width:100%}
 .sec{display:none}.sec.on{display:block}
 @keyframes fu{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 .sec.on>*{animation:fu .22s ease both}
@@ -1295,7 +1295,10 @@ function renderCompras(){
             </div>
             <input class="ci" type="text" placeholder="Ciudad..." value="${esc(it.nota)}" data-cat="${cat.id}" data-p="${p}" data-i="${i}" data-f="nota" oninput="onCompra(this)">
           </div>
-          ${parseFloat(it.cost)>0?`<div style="font-size:10px;color:var(--muted);margin-top:3px;font-family:'DM Mono',monospace">≈ ${f$(parseFloat(it.cost)*rate)} USD</div>`:''}
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:3px">
+            ${parseFloat(it.cost)>0?`<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">≈ ${f$(parseFloat(it.cost)*rate)} USD</div>`:'<div></div>'}
+            <button onclick="delCompraRow('${cat.id}','${p}',${i})" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--lite);padding:0 2px;line-height:1" title="Borrar">✕</button>
+          </div>
         </div>`).join("");
       const pEur=items.reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
       const pUsd=pEur*rate;
@@ -1341,6 +1344,14 @@ function updateComprasTotal(){
   const teur=document.getElementById("tot-compras-eur");if(teur)teur.textContent="€"+Math.round(totEur);
 }
 
+
+function delCompraRow(catId,persona,idx){
+  const key=catId+"_"+persona;
+  if(!S.compras[key])return;
+  S.compras[key].splice(idx,1);
+  renderCompras();
+  scheduleSave();
+}
 function addCompraRow(catId,persona){
   const key=catId+"_"+persona;
   if(!S.compras[key])S.compras[key]=[];
