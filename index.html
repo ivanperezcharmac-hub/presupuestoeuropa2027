@@ -387,7 +387,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
         <div class="tb-sub">Europa 2027 · Todo en USD</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)"><span>EUR/USD</span><input id="eur-usd" type="number" step="0.01" min="0.5" max="2" value="1.08" style="width:60px;padding:4px 7px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:12px;font-family:'DM Mono',monospace;background:var(--cream);color:var(--txt);outline:none" title="Tipo de cambio EUR → USD (actualizado automáticamente)" oninput="onEurUsd(this)"><span id="eur-src" style="font-size:9px;color:var(--lite)">cargando…</span></div><div class="tb-act">
+    <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)"><span>EUR/USD</span><input id="eur-usd" type="number" step="0.01" min="0.5" max="2" value="1.165" style="width:60px;padding:4px 7px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:12px;font-family:'DM Mono',monospace;background:var(--cream);color:var(--txt);outline:none" title="Tipo de cambio EUR → USD (actualizado automáticamente)" oninput="onEurUsd(this)"><span id="eur-src" style="font-size:9px;color:var(--lite)">cargando…</span></div><div class="tb-act">
       <button class="btn btn-g btn-sync-desktop" id="btn-sync" onclick="syncNow()" title="Forzar sincronización">☁ Sincronizar</button>
 
     </div>
@@ -1741,26 +1741,30 @@ function onEurUsd(el){
   const src=document.getElementById('eur-src');
   if(src)src.textContent='editado manualmente';
 }
-function getEurUsd(){return parseFloat(document.getElementById('eur-usd')?.value)||1.08;}
+function getEurUsd(){return parseFloat(document.getElementById('eur-usd')?.value)||1.165;}
 
 async function fetchEurUsd(){
   const src=document.getElementById('eur-src');
-  try{
-    // API gratuita sin key: frankfurter.app
-    const res=await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD');
-    const data=await res.json();
-    const rate=data?.rates?.USD;
-    if(rate&&rate>0){
-      const el=document.getElementById('eur-usd');
-      if(el){el.value=rate.toFixed(4);}
-      S.eurUsd=rate;
-      if(src)src.textContent='hoy: '+rate.toFixed(4);
-      recalc();
-    }
-  }catch(e){
-    if(src)src.textContent='sin conexión';
-    console.warn('EUR/USD fetch failed:',e);
+  const apis=[
+    ()=>fetch('https://api.frankfurter.app/latest?from=EUR&to=USD').then(r=>r.json()).then(d=>d?.rates?.USD),
+    ()=>fetch('https://open.er-api.com/v6/latest/EUR').then(r=>r.json()).then(d=>d?.rates?.USD),
+    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json').then(r=>r.json()).then(d=>d?.eur?.usd),
+  ];
+  for(const api of apis){
+    try{
+      const rate=await api();
+      if(rate&&rate>0.5&&rate<3){
+        const el=document.getElementById('eur-usd');
+        if(el)el.value=rate.toFixed(4);
+        S.eurUsd=rate;
+        if(src)src.textContent='hoy: '+rate.toFixed(4);
+        recalc();
+        checkAlertas();
+        return;
+      }
+    }catch(e){continue;}
   }
+  if(src)src.textContent='sin conexión';
 }
 
 // ── OFFLINE DETECTION ──
