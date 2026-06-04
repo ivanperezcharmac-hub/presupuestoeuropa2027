@@ -808,7 +808,7 @@ function initState(){
   if(!S.itinerario||typeof S.itinerario!=="object")S.itinerario={};
   if(!S.alertas||typeof S.alertas!=="object")S.alertas={};
   if(typeof S.notas!=="string")S.notas="";
-  if(S.eurUsd){const el=document.getElementById('eur-usd');if(el)el.value=S.eurUsd;}
+  // eurUsd NO se restaura desde el estado guardado — siempre usa la API del día
   CITIES.forEach(c=>{
     if(!S.cities[c.id])S.cities[c.id]={checkIn:c.defIn,checkOut:c.defOut,hotel:0,daily:0};
     if(!S.accom[c.id])S.accom[c.id]={chosen:-1,opts:[empty(),empty(),empty()]};
@@ -1737,7 +1737,7 @@ function closeSidebar(){
 // ── TIPO DE CAMBIO (auto) ──
 function onEurUsd(el){
   const v=parseFloat(el.value);
-  if(v>0){S.eurUsd=v;scheduleSave();}
+  if(v>0){recalc();} // no guardar en S.eurUsd — la API lo pisa igual
   const src=document.getElementById('eur-src');
   if(src)src.textContent='editado manualmente';
 }
