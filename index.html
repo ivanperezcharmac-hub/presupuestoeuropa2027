@@ -457,19 +457,12 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
 
 
       <div class="card" style="margin-top:16px">
-        <div class="ch">
-          <div><div class="ct">Desglose por categoría</div><div class="cs">Todos los valores en USD</div></div>
+        <div style="text-align:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px">Desglose por categoría</div>
+          <div style="font-family:'DM Mono',monospace;font-size:32px;font-weight:700;color:var(--navy)" id="sum-tot">$0</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px" id="sum-day">$0 / día</div>
         </div>
         <div id="sum-rows"></div>
-        <div class="div"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0">
-          <div style="font-size:14.5px;font-weight:600">Total del viaje</div>
-          <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:var(--navy)" id="sum-tot">$0</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0 0">
-          <div style="font-size:11px;color:var(--muted)">Costo por día (26 días)</div>
-          <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)" id="sum-day">$0 / día</div>
-        </div>
       </div>
 
 
@@ -1102,21 +1095,38 @@ function recalc(){
   document.getElementById("tot-intl").textContent=f$(intlT);
   document.getElementById("tot-eu").textContent=f$(euT);
 
-  const rows=[
-    {l:"Vuelo internacional (ida)",s:"BUE → MAD — 17 mar 2027",v:gp("eze-mad")},
-    {l:"Vuelo internacional (vuelta)",s:"MAD → BUE — 11 abr 2027",v:gp("mad-eze")},
-    {l:"Vuelos internos Europa",s:"6 tramos dentro de Europa",v:euT},
-    {l:"Alojamiento",s:daysUsed>0?`${daysUsed} noches en total`:"Sin fechas asignadas",v:alojT},
-    {l:"Gastos diarios",s:"Comidas, transport, actividades",v:gastoT},
-    {l:"Extras e imprevistos",s:"Seguro, museos, shopping, tours",v:extraT},
-    {l:"Excursiones & Experiencias",s:"Actividades por ciudad",v:excT},
-    {l:"Compras del viaje",s:"Ropa, tech, souvenirs y más",v:comprasT}
-  ];
-  document.getElementById("sum-rows").innerHTML=rows.map(r=>`
-    <div class="sr">
-      <div><div class="srl">${r.l}</div><div class="srs">${r.s}</div></div>
-      <div class="srv">${f$(r.v)}</div>
-    </div>`).join("");
+  // Sub-compras por persona
+  const comprasAgusTotal=COMPRAS_CATS.reduce((s,cat)=>s+(S.compras&&S.compras[cat.id+"_agus"]?S.compras[cat.id+"_agus"].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0),0);
+  const comprasIvanTotal=COMPRAS_CATS.reduce((s,cat)=>s+(S.compras&&S.compras[cat.id+"_ivan"]?S.compras[cat.id+"_ivan"].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0),0);
+
+  const mkRow=(l,s,v,indent)=>`
+    <div class="sr" ${indent?'style="padding-left:16px;background:var(--cream);border-radius:var(--rs);margin:2px 0"':''}>
+      <div><div class="srl" style="${indent?'font-size:11.5px;color:var(--muted)':''}">${indent?'↳ ':''} ${l}</div>${s?`<div class="srs">${s}</div>`:''}</div>
+      <div class="srv" style="${indent?'font-size:12px':'''}">${f$(v)}</div>
+    </div>`;
+
+  const baseRows=[
+    mkRow("✈ Vuelo internacional (ida)","BUE → MAD",gp("eze-mad"),false),
+    mkRow("✈ Vuelo internacional (vuelta)","MAD → BUE",gp("mad-eze"),false),
+    mkRow("🛫 Vuelos internos Europa","6 tramos EU",euT,false),
+    mkRow("🛏 Alojamiento",daysUsed>0?daysUsed+" noches":"Sin fechas",alojT,false),
+  ].join("");
+
+  const destinoRows=[
+    mkRow("🍽 Gastos diarios","Comidas, transporte",gastoT,false),
+    mkRow("🗺 Excursiones","Actividades por ciudad",excT,false),
+    mkRow("🛍 Compras","Total Agus + Ivan",comprasT,false),
+    mkRow("👩 Agus","",comprasAgusTotal,true),
+    mkRow("👨 Ivan","",comprasIvanTotal,true),
+    mkRow("🎭 Extras e imprevistos","Seguro, tours, shopping",extraT,false),
+  ].join("");
+
+  document.getElementById("sum-rows").innerHTML=`
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);padding:6px 0 4px;border-bottom:2px solid var(--navy);margin-bottom:4px">✈ Presupuesto base</div>
+    ${baseRows}
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--grn);padding:10px 0 4px;border-bottom:2px solid var(--grn);margin-bottom:4px">🌍 Gastos en destino</div>
+    ${destinoRows}
+  `;
   document.getElementById("sum-tot").textContent=f$(grand);
   document.getElementById("sum-day").textContent=f$(grand/26)+" / día";
 
