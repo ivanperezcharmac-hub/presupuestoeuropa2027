@@ -43,7 +43,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--txt);m
 .sb-dot{width:5px;height:5px;border-radius:50%;background:var(--grn)}
 
 /* ── MAIN ── */
-.main{margin-left:228px;flex:1;display:flex;justify-content:center}
+.main{margin-left:228px;flex:1}
 .tbar{background:#fff;border-bottom:1px solid var(--border);padding:0 30px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
 .tb-title{font-size:14.5px;font-weight:500}
 .tb-sub{font-size:11px;color:var(--muted);margin-top:1px}
@@ -72,7 +72,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--txt);m
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── PAGE ── */
-.page{padding:26px 40px;max-width:960px;width:100%}
+.page{padding:26px 40px;max-width:960px;width:100%;margin:0 auto}
 .sec{display:none}.sec.on{display:block}
 @keyframes fu{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 .sec.on>*{animation:fu .22s ease both}
@@ -237,7 +237,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
   .btn-sync-desktop{display:none !important}
 
   /* Page padding menor */
-  .page{padding:16px 14px;max-width:100%}
+  .page{padding:16px 14px;max-width:100%;margin:0 auto}
 
   /* Grids de 2 col → 1 col */
   .cgrid{grid-template-columns:1fr}
