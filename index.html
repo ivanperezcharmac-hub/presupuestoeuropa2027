@@ -435,7 +435,6 @@ body.dark select.sel2,body.dark select.ain{background:#242938;color:var(--txt)}
     <button class="ni" onclick="go('vuelos')"><span class="ni-ic">✈</span>Vuelos</button>
     <button class="ni" onclick="go('ciudades')"><span class="ni-ic">🏛</span>Ciudades</button>
     <button class="ni" onclick="go('alojamientos')"><span class="ni-ic">🛏</span>Alojamientos</button>
-    <button class="ni" onclick="go('extras')"><span class="ni-ic">🎭</span>Extras</button>
     <button class="ni" onclick="go('excursiones')"><span class="ni-ic">🗺</span>Excursiones</button>
     <button class="ni" onclick="go('compras')"><span class="ni-ic">🛍</span>Compras</button>
     <button class="ni" onclick="go('itinerario')"><span class="ni-ic">🗓</span>Itinerario</button>
@@ -530,10 +529,7 @@ body.dark select.sel2,body.dark select.ain{background:#242938;color:var(--txt)}
               <span style="color:var(--muted)">Compras</span>
               <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-compras">$0</span>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:12px">
-              <span style="color:var(--muted)">Extras</span>
-              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-extra">$0</span>
-            </div>
+  
           </div>
         </div>
 
@@ -628,26 +624,33 @@ body.dark select.sel2,body.dark select.ain{background:#242938;color:var(--txt)}
       <div id="accom-c"></div>
     </div>
 
-    <!-- ══ EXTRAS ══ -->
-    <div class="sec" id="sec-extras">
-      <div class="sh">Gastos extra</div>
-      <div class="ss">Seguro de viaje, museos, tours, shopping y otros costos del viaje.</div>
-      <div class="egrid" id="extras-c"></div>
-      <div class="card" style="margin-top:4px">
-        <div class="ch"><div class="ct">Notas personales</div></div>
-        <textarea id="notas" style="width:100%;min-height:88px;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;background:var(--cream);color:var(--txt);outline:none;resize:vertical;line-height:1.6" placeholder="Links a hoteles, ideas para paseos, recordatorios..." oninput="scheduleSave()"></textarea>
+
+
+
+    <!-- ══ ACTIVIDADES (Excursiones + Itinerario) ══ -->
+    <div class="sec" id="sec-actividades">
+      <div class="sh">Excursiones & Plan de viaje</div>
+      <div class="ss">Actividades por ciudad y tu itinerario día a día, todo en un lugar.</div>
+
+      <!-- Tabs internos -->
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button class="ot on" id="act-tab-exc" onclick="switchActTab('exc')">🗺 Excursiones</button>
+        <button class="ot" id="act-tab-plan" onclick="switchActTab('plan')">🗓 Plan día a día</button>
       </div>
-    </div>
 
+      <!-- Panel Excursiones -->
+      <div id="act-panel-exc">
+        <div class="tip">💡 Cargá el costo estimado por actividad en USD. Podés poner el link de reserva para tenerlo a mano.</div>
+        <div id="excursiones-c"></div>
+        <div class="card" style="margin-top:4px">
+          <div class="ch"><div class="ct">💰 Total excursiones</div><div class="cv" id="tot-excursiones">$0</div></div>
+        </div>
+      </div>
 
-    <!-- ══ EXCURSIONES ══ -->
-    <div class="sec" id="sec-excursiones">
-      <div class="sh">Excursiones & Experiencias</div>
-      <div class="ss">Actividades, parques, museos y tours por ciudad. Se suman al total del viaje.</div>
-      <div class="tip">💡 Cargá el costo total estimado por actividad. Podés poner el link de reserva para tenerlo a mano. Todo en USD.</div>
-      <div id="excursiones-c"></div>
-      <div class="card" style="margin-top:4px">
-        <div class="ch"><div class="ct">💰 Total excursiones</div><div class="cv" id="tot-excursiones">$0</div></div>
+      <!-- Panel Itinerario -->
+      <div id="act-panel-plan" style="display:none">
+        <div class="tip">💡 Las fechas se toman de la sección Ciudades. Anotá qué hacen cada día — museos, restaurantes, reservas.</div>
+        <div id="itinerario-c"></div>
       </div>
     </div>
 
@@ -669,14 +672,6 @@ body.dark select.sel2,body.dark select.ain{background:#242938;color:var(--txt)}
       </div>
     </div>
 
-
-    <!-- ══ ITINERARIO ══ -->
-    <div class="sec" id="sec-itinerario">
-      <div class="sh">Itinerario día a día</div>
-      <div class="ss">Qué hacen cada día del viaje. Se genera automáticamente según las fechas de cada ciudad.</div>
-      <div class="tip">💡 Las fechas se toman de la sección Ciudades. Podés agregar una nota para cada día — qué visitar, dónde comer, reservas.</div>
-      <div id="itinerario-c"></div>
-    </div>
 
     <!-- ══ ALERTAS ══ -->
     <div class="sec" id="sec-alertas">
@@ -1254,10 +1249,10 @@ function recalc(){
   const excT=EXCURSION_CITIES.reduce((s,city)=>{
     return s+(S.excursiones&&S.excursiones[city.id]?S.excursiones[city.id].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0);
   },0);
-  const grand=intlT+euT+alojT+gastoT+extraT+excT+comprasT;
+  const grand=intlT+euT+alojT+gastoT+excT+comprasT;
 
   const baseT=intlT+euT+alojT;
-  const destinoT=gastoT+excT+comprasT+extraT;
+  const destinoT=gastoT+excT+comprasT;
   document.getElementById("sb-tot").textContent=f$(grand);
   document.getElementById("h-tot").textContent=f$(grand);
   document.getElementById("h-sub").textContent=grand>0?`${f$(grand/26)} por día · 26 días`:"Completá los datos en cada sección";
@@ -1269,7 +1264,6 @@ function recalc(){
   document.getElementById("h-gasto").textContent=f$(gastoT);
   document.getElementById("h-exc").textContent=f$(excT);
   document.getElementById("h-compras").textContent=f$(comprasT);
-  document.getElementById("h-extra").textContent=f$(extraT);
   document.getElementById("tot-intl").textContent=f$(intlT);
   document.getElementById("tot-eu").textContent=f$(euT);
 
@@ -1702,6 +1696,16 @@ function toggleCheck(gi,ii){
   scheduleSave();
 }
 
+
+// ── ACTIVIDADES TABS ──
+function switchActTab(tab){
+  document.getElementById("act-panel-exc").style.display = tab==="exc"?"block":"none";
+  document.getElementById("act-panel-plan").style.display = tab==="plan"?"block":"none";
+  document.getElementById("act-tab-exc").className = "ot"+(tab==="exc"?" on":"");
+  document.getElementById("act-tab-plan").className = "ot"+(tab==="plan"?" on":"");
+  if(tab==="plan") renderItinerario();
+}
+
 // ── ITINERARIO ──
 function renderItinerario(){
   const el=document.getElementById("itinerario-c");
@@ -1898,7 +1902,6 @@ function renderAll(){
   renderCompras();
   renderItinerario();
   renderChecklist();
-  const n=document.getElementById("notas");if(n)n.value=S.notas||"";
 }
 
 // ══════════════════════════ INIT ═════════════════════════════════════
