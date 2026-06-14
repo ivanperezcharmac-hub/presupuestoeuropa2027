@@ -223,59 +223,101 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
 .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;backdrop-filter:blur(2px)}
 
 @media(max-width:900px){
-  /* Sidebar como drawer deslizable */
+  /* ── SIDEBAR DRAWER ── */
   .sb{transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);z-index:200;width:260px;box-shadow:4px 0 24px rgba(0,0,0,.3)}
   .sb.open{transform:translateX(0)}
   .sb-overlay.open{display:block}
 
-  /* Main ocupa todo el ancho */
+  /* ── MAIN ── */
   .main{margin-left:0}
+  .page{padding:16px 14px;max-width:100%;margin:0 auto;box-sizing:border-box}
 
-  /* Topbar: mostrar hamburger, ocultar botón sincronizar */
-  .tbar{padding:0 14px;gap:10px}
+  /* ── TOPBAR ── */
+  .tbar{padding:0 12px;gap:6px;height:auto;min-height:54px;flex-wrap:nowrap}
   .btn-hamburger{display:flex !important}
   .btn-sync-desktop{display:none !important}
+  .tb-title{font-size:13px}
+  .tb-sub{font-size:10px}
+  .tb-act{gap:4px}
+  .tb-act .btn{padding:5px 8px;font-size:11px}
+  /* EUR/USD field en mobile más chico */
+  #eur-usd{width:52px!important;font-size:11px!important}
+  #eur-src{display:none}
 
-  /* Page padding menor */
-  .page{padding:16px 14px;max-width:100%;margin:0 auto}
-
-  /* Grids de 2 col → 1 col */
+  /* ── GRIDS → 1 COLUMNA ── */
   .cgrid{grid-template-columns:1fr}
-  #sec-resumen .card+div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
   .egrid{grid-template-columns:1fr 1fr}
   .costs-grid{grid-template-columns:1fr}
   .thg{grid-template-columns:1fr}
   .hg{grid-template-columns:1fr 1fr}
 
-  /* Vuelos: grid simplificado */
-  .fr{grid-template-columns:1fr 100px;gap:7px}
+  /* ── RESUMEN: bloques base/destino en columna ── */
+  #sec-resumen > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  /* Gasto por persona */
+  #sec-resumen .card div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr 1fr}
+
+  /* ── HERO ── */
+  .hero{padding:16px}
+  .ht{font-size:28px}
+
+  /* ── CARDS ── */
+  .card{padding:12px}
+
+  /* ── VUELOS ── */
+  .fr{grid-template-columns:1fr 90px;gap:6px}
   .fr .gfb{display:none}
   .pw{justify-content:flex-start}
+  .pi{width:76px}
 
-  /* Alojamientos: grid de 3 → 1 o 2 col */
+  /* ── ALOJAMIENTOS ── */
   .af{grid-template-columns:1fr 1fr}
   .af .afl[style*="span 3"]{grid-column:span 2 !important}
   .af .afl[style*="span 2"]{grid-column:span 2 !important}
+  .otabs{gap:4px}
+  .ot{padding:5px 10px;font-size:11px}
 
-  /* Cards menos padding */
-  .card{padding:14px}
+  /* ── EXCURSIONES: grid 3col → 1col ── */
+  #excursiones-c div[style*="grid-template-columns:1fr 100px 1fr"]{
+    grid-template-columns:1fr 80px!important
+  }
 
-  /* Hero más compacto */
-  .ht{font-size:34px}
-  .hero{padding:18px}
+  /* ── COMPRAS: columnas Agus/Ivan → stack ── */
+  #compras-c .card > div[style*="display:flex;gap:0"]{flex-direction:column!important}
+  #compras-c .card > div[style*="display:flex;gap:0"] > div[style*="width:1px"]{
+    width:100%!important;height:1px!important;margin:10px 0!important
+  }
+  #compras-c div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr 80px!important}
 
-  /* Topbar title más chico */
-  .tb-title{font-size:13px}
-  .tb-sub{font-size:10px}
+  /* ── ALERTAS: grid 3col → 1col ── */
+  #sec-alertas div[style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+  #impacto-c{grid-template-columns:1fr 1fr!important}
 
-  /* Botones topbar más chicos */
-  .tb-act .btn{padding:5px 9px;font-size:11px}
+  /* ── ITINERARIO ── */
+  #itinerario-c div[style*="grid-template-columns:100px 1fr"]{grid-template-columns:72px 1fr!important}
+
+  /* ── CHART PIE ── */
+  #sec-resumen .card div[style*="display:flex;align-items:center;gap:28px"]{flex-direction:column;align-items:center}
+  #pie-chart{width:140px;height:140px}
+
+  /* ── COSTOS ── */
+  .bar-row{grid-template-columns:80px 1fr 60px}
 }
 
+
 @media(max-width:480px){
-  /* Compras 2 columnas → stack en mobile */
-  #compras-c .card > div[style*="display:flex;gap:0"]{flex-direction:column!important}
-  #compras-c .card > div[style*="display:flex;gap:0"] > div[style*="width:1px"]{width:100%!important;height:1px!important;margin:10px 0!important}
+  .hg{grid-template-columns:1fr 1fr}
+  .egrid{grid-template-columns:1fr}
+  .af{grid-template-columns:1fr}
+  .af .afl[style*="span 3"]{grid-column:span 1 !important}
+  .af .afl[style*="span 2"]{grid-column:span 1 !important}
+  .tbar{height:auto;min-height:50px;padding:8px 12px}
+  .tb-sub{display:none}
+  .ht{font-size:24px}
+  #impacto-c{grid-template-columns:1fr 1fr!important}
+  /* Compras en mobile chico: cada item full width */
+  #compras-c div[style*="grid-template-columns:1fr 80px"]{grid-template-columns:1fr 70px!important}
+}
+
   /* Alojamiento tabs más legibles */
   .otabs{gap:4px}
   .ot{padding:5px 10px;font-size:11px}
