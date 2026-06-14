@@ -349,27 +349,73 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
 
 /* ── DARK MODE ── */
 body.dark{
-  --cream:#1a1f2e;--cream2:#242938;--white:#1e2436;--txt:#e8eaf0;
-  --muted:#8892a4;--lite:#5a6478;--border:#2e3548;
-  --navy:#c9a84c;--navy2:#d4b86a;--navy3:#dfc87a;
-  --goldl:#0f1e35;--gold:#c9a84c;
-  --grn:#3d9e6b;--grn-bg:#1a2e24;
-  --red:#e05c5c;--red-bg:#2e1a1a;
-  --blu:#5b9cf6;--blu-bg:#1a2040;
-  --sh:0 2px 16px rgba(0,0,0,.3)
+  --cream:#141920;
+  --cream2:#1c2330;
+  --border:#2a3344;
+  --txt:#e2e8f0;
+  --muted:#7a8ba0;
+  --lite:#4a5568;
+  --sh:0 2px 16px rgba(0,0,0,.4);
 }
-body.dark .sb{background:#0d1520}
-body.dark .tbar,body.dark .card,body.dark .cc,body.dark .ec,body.dark .cost-card{background:#1e2436}
-body.dark #bottom-nav{background:#1e2436;border-color:#2e3548}
-body.dark .ci,body.dark .ain,body.dark .an,body.dark .pi{background:#242938;color:var(--txt);border-color:#2e3548}
-body.dark .ci:focus,body.dark .ain:focus{background:#2e3548}
-body.dark #loading-overlay{background:#0d1520}
-body.dark #login-screen{background:#0d1520}
-body.dark .login-box{background:rgba(255,255,255,.04)}
-body.dark .sm{background:rgba(255,255,255,.05)}
-body.dark .hero{background:#0d1520}
-body.dark .cfoot,body.dark .cch{background:#242938}
-body.dark select.sel2,body.dark select.ain{background:#242938;color:var(--txt)}
+
+/* Fondos principales */
+body.dark{background:var(--cream)}
+body.dark .sb{background:#0d1117;border-right:1px solid #1e2736}
+body.dark .tbar{background:#111827;border-color:#1e2736}
+body.dark .card{background:#1a2236;border-color:#2a3344}
+body.dark .cc{background:#1a2236;border-color:#2a3344}
+body.dark .ec{background:#1a2236;border-color:#2a3344}
+body.dark .cost-card{background:#1a2236;border-color:#2a3344}
+body.dark #bottom-nav{background:#111827;border-color:#1e2736}
+body.dark #login-screen{background:#0d1117}
+body.dark .login-box{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
+body.dark #loading-overlay{background:#0d1117}
+
+/* Inputs */
+body.dark .ci{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
+body.dark .ci:focus{background:#111827;border-color:#c9a84c}
+body.dark .ain{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
+body.dark .ain:focus{background:#111827;border-color:#c9a84c}
+body.dark .an{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
+body.dark .an:focus{background:#111827;border-color:#c9a84c}
+body.dark .pi{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
+body.dark select.sel2{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
+body.dark select.ain{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
+body.dark .login-input{background:rgba(255,255,255,.06);color:#e2e8f0}
+
+/* Botones */
+body.dark .btn-g{background:#1a2236;border-color:#2a3344;color:#a0aec0}
+body.dark .btn-g:hover{background:#222e42;color:#e2e8f0}
+body.dark .btn-p{background:#c9a84c;color:#0d1117}
+body.dark .btn-p:hover{filter:brightness(1.1)}
+body.dark .btn-grn{background:#2d7a4f;color:#fff}
+body.dark .btn-red{border-color:#c0392b;color:#e57373;background:transparent}
+body.dark .ot{border-color:#2a3344;color:#7a8ba0}
+body.dark .ot:hover{border-color:#c9a84c;color:#e2e8f0}
+body.dark .ot.on{background:#c9a84c;color:#0d1117;border-color:#c9a84c}
+body.dark .ot.chosen{background:#2d7a4f;color:#fff;border-color:#2d7a4f}
+
+/* Sidebar nav */
+body.dark .ni{color:rgba(255,255,255,.45)}
+body.dark .ni:hover{background:rgba(255,255,255,.06);color:#fff}
+body.dark .ni.on{background:rgba(201,168,76,.2);color:#e8c97e}
+
+/* Misceláneos */
+body.dark .hero{background:#0d1117}
+body.dark .sm{background:rgba(255,255,255,.06)}
+body.dark .cch{background:#1a2236;border-color:#2a3344}
+body.dark .cfoot{background:#111827;border-color:#2a3344}
+body.dark .tip{background:#111827;border-color:#2a3344;color:#7a8ba0}
+body.dark .tip strong{color:#e2e8f0}
+body.dark .bn-item{color:#4a5568}
+body.dark .bn-item.on{color:#c9a84c}
+body.dark .sw.sel{border-color:#c9a84c}
+body.dark #dark-toggle{background:#2a3344;color:#e8c97e;border:1px solid #3a4454}
+body.dark #dark-toggle:hover{background:#3a4454}
+body.dark .pt{background:#1c2330}
+body.dark .bar-t{background:#1c2330}
+body.dark .cost-tip{background:#111827;color:#7a8ba0}
+body.dark .cost-tip strong{color:#e2e8f0}
 
 /* ── BOTTOM NAV ── */
 #bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:#fff;border-top:1px solid var(--border);z-index:150;grid-template-columns:repeat(5,1fr);align-items:center}
