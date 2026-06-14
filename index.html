@@ -387,7 +387,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
   <button class="sb-close" onclick="closeSidebar()">✕</button>
   <div class="sb-brand">
     <h2>✈ Europa<br>2027</h2>
-    <p id="sb-dates">17 MAR → 11 ABR · 26 DÍAS</p>
+    <p id="sb-dates">17 MAR → 11 ABR · 26 DÍAS · 5 CIUDADES</p>
   </div>
   <div class="sb-nav">
     <div class="ngl">Presupuesto</div>
@@ -556,7 +556,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
       </div>
       <div class="card">
         <div class="ch">
-          <div><div class="ct">🛫 Internos Europa</div><div class="cs">MAD → BCN → ROM → PAR → AMS → LON → MAD</div></div>
+          <div><div class="ct">🛫 Internos Europa</div><div class="cs">MAD → BCN → ROM → PAR → LON → MAD</div></div>
           <div class="cv" id="tot-eu">$0</div>
         </div>
         <div id="eu-c"></div>
@@ -768,17 +768,15 @@ const EURO=[
   {id:"mad-bcn",route:"Madrid → Barcelona",date:"~22 mar",note:"Vueling, Iberia Express · ~1h15",url:"https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI3LTAzLTIyagcIARIDTUFEcgcIARIDQkNOSAFwAQ"},
   {id:"bcn-rom",route:"Barcelona → Roma (FCO)",date:"~26 mar",note:"Vueling, Ryanair · ~1h50",url:"https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI3LTAzLTI2agcIARIEQkNOTnIHCAESA0ZDT0gBcAE"},
   {id:"rom-par",route:"Roma → París (CDG)",date:"~31 mar",note:"Vueling, easyJet · ~2h10",url:"https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI3LTAzLTMxagcIARIDRkNPcgcIARIDQ0RHSAFwAQ"},
-  {id:"par-ams",route:"París → Ámsterdam",date:"~4 abr",note:"Transavia, KLM · ~1h20",url:"https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI3LTA0LTA0agcIARIDQ0RHcgcIARIDQU1TSAFwAQ"},
-  {id:"ams-lon",route:"Ámsterdam → Londres (LHR)",date:"~7 abr",note:"easyJet, KLM · ~1h15",url:"https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI3LTA0LTA3agcIARIDQU1TcgcIARIDTEhSSAFwAQ"},
+  {id:"par-lon",route:"París → Londres (LHR)",date:"~5 abr",note:"Eurostar, easyJet, Vueling · ~1h20",url:"https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI3LTA0LTA1agcIARIDQ0RHcgcIARIDTEhSSAFwAQ"},
   {id:"lon-mad",route:"Londres → Madrid",date:"~10 abr",note:"Vueling, Iberia, Ryanair · ~2h30",url:"https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI3LTA0LTEwagcIARIDTEhScgcIARIDTUFESAFwAQ"}
 ];
 const CITIES=[
   {id:"madrid",    name:"Madrid",    country:"España",       flag:"🇪🇸", defIn:"2027-03-17", defOut:"2027-03-22"},
   {id:"barcelona", name:"Barcelona", country:"España",       flag:"🇪🇸", defIn:"2027-03-22", defOut:"2027-03-26"},
   {id:"roma",      name:"Roma",      country:"Italia",       flag:"🇮🇹", defIn:"2027-03-26", defOut:"2027-03-31"},
-  {id:"paris",     name:"París",     country:"Francia",      flag:"🇫🇷", defIn:"2027-03-31", defOut:"2027-04-04"},
-  {id:"amsterdam", name:"Ámsterdam", country:"Países Bajos", flag:"🇳🇱", defIn:"2027-04-04", defOut:"2027-04-07"},
-  {id:"londres",   name:"Londres",   country:"Reino Unido",  flag:"🇬🇧", defIn:"2027-04-07", defOut:"2027-04-11"}
+  {id:"paris",     name:"París",     country:"Francia",      flag:"🇫🇷", defIn:"2027-03-31", defOut:"2027-04-05"},
+  {id:"londres",   name:"Londres",   country:"Reino Unido",  flag:"🇬🇧", defIn:"2027-04-05", defOut:"2027-04-11"}
 ];
 const EXTRAS=[
   {id:"seguro",     ic:"🛡️", l:"Seguro de viaje",      d:"Assist Card u similar. ~$5–8 por día total."},
@@ -805,10 +803,6 @@ const COSTS=[
    rows:[{l:"Comidas (3/día)",v:"$52–90"},{l:"Transporte (Navigo)",v:"$8–20"},{l:"Museos / actividades",v:"$20–45"},{l:"Cafés y bebidas",v:"$14–26"},{l:"TOTAL sin alojamiento",v:"$94–181",hi:true}],
    tip:"<strong>Navigo Semana</strong> (~$34): transporte ilimitado. <strong>Louvre</strong>: gratuito primer domingo de cada mes. Comer de pie en el mostrador sale la mitad.",
    src:"Fuentes: RadicalStorage 2026, ThetravelerOrg"},
-  {city:"Ámsterdam", flag:"🇳🇱", country:"Países Bajos",
-   rows:[{l:"Comidas (3/día)",v:"$50–90"},{l:"Transporte (GVB)",v:"$10–20"},{l:"Museos / actividades",v:"$22–50"},{l:"Cafés y bebidas",v:"$14–26"},{l:"TOTAL sin alojamiento",v:"$96–186",hi:true}],
-   tip:"<strong>I Amsterdam City Card</strong> (~$76/24h): transporte + museos. <strong>Van Gogh Museum</strong> y <strong>Anne Frank House</strong>: reservar online con 3–4 semanas de anticipación.",
-   src:"Fuentes: BudgetYourTrip 2026, RadicalStorage 2026"},
   {city:"Londres", flag:"🇬🇧", country:"Reino Unido",
    rows:[{l:"Comidas (3/día)",v:"$55–100"},{l:"Transporte (Oyster)",v:"$14–22"},{l:"Museos / actividades",v:"$18–40"},{l:"Cafés y bebidas",v:"$14–28"},{l:"TOTAL sin alojamiento",v:"$101–190",hi:true}],
    tip:"<strong>British Museum, National Gallery y Tate Modern son gratuitos.</strong> Usar <strong>Oyster Card</strong> para el metro (cap diario ~$16). La libra puede encarecer bastante.",
@@ -831,7 +825,6 @@ const EXCURSION_CITIES=[
   {id:"barcelona", name:"Barcelona", flag:"🇪🇸", suggestions:["Sagrada Família","Park Güell","Camp Nou Tour","Montjuïc","Tour Gótico"]},
   {id:"roma",      name:"Roma",      flag:"🇮🇹", suggestions:["Coliseo + Foro Romano","Museos Vaticanos","Galería Borghese","Tour Trastevere","Catacumbas"]},
   {id:"paris",     name:"París",     flag:"🇫🇷", suggestions:["Torre Eiffel","Louvre","Versalles","Crucero Sena","Moulin Rouge"]},
-  {id:"amsterdam", name:"Ámsterdam", flag:"🇳🇱", suggestions:["Van Gogh Museum","Anne Frank House","Crucero canales","Zaanse Schans","Rijksmuseum"]},
   {id:"londres",   name:"Londres",   flag:"🇬🇧", suggestions:["Tower of London","Harry Potter Studio","London Eye","Kensington Palace","Tour Notting Hill"]}
 ];
 
