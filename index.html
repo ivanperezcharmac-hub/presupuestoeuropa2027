@@ -345,6 +345,46 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
 /* ── OFFLINE BANNER ── */
 #offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9998;background:#c0392b;color:#fff;font-size:12px;font-weight:500;text-align:center;padding:7px;animation:fu .2s ease}
 #offline-banner.show{display:block}
+
+
+/* ── DARK MODE ── */
+body.dark{
+  --cream:#1a1f2e;--cream2:#242938;--white:#1e2436;--txt:#e8eaf0;
+  --muted:#8892a4;--lite:#5a6478;--border:#2e3548;
+  --navy:#c9a84c;--navy2:#d4b86a;--navy3:#dfc87a;
+  --goldl:#0f1e35;--gold:#c9a84c;
+  --grn:#3d9e6b;--grn-bg:#1a2e24;
+  --red:#e05c5c;--red-bg:#2e1a1a;
+  --blu:#5b9cf6;--blu-bg:#1a2040;
+  --sh:0 2px 16px rgba(0,0,0,.3)
+}
+body.dark .sb{background:#0d1520}
+body.dark .tbar,body.dark .card,body.dark .cc,body.dark .ec,body.dark .cost-card{background:#1e2436}
+body.dark #bottom-nav{background:#1e2436;border-color:#2e3548}
+body.dark .ci,body.dark .ain,body.dark .an,body.dark .pi{background:#242938;color:var(--txt);border-color:#2e3548}
+body.dark .ci:focus,body.dark .ain:focus{background:#2e3548}
+body.dark #loading-overlay{background:#0d1520}
+body.dark #login-screen{background:#0d1520}
+body.dark .login-box{background:rgba(255,255,255,.04)}
+body.dark .sm{background:rgba(255,255,255,.05)}
+body.dark .hero{background:#0d1520}
+body.dark .cfoot,body.dark .cch{background:#242938}
+body.dark select.sel2,body.dark select.ain{background:#242938;color:var(--txt)}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:#fff;border-top:1px solid var(--border);z-index:150;grid-template-columns:repeat(5,1fr);align-items:center}
+.bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 0;cursor:pointer;color:var(--muted);border:none;background:none;width:100%;height:100%;font-family:'DM Sans',sans-serif}
+.bn-item.on{color:var(--navy)}
+.bn-item svg{width:20px;height:20px;stroke-width:1.8}
+.bn-item span{font-size:9px;font-weight:500;letter-spacing:.02em}
+@media(max-width:900px){
+  #bottom-nav{display:grid}
+  .main{padding-bottom:60px}
+  /* Ocultar hamburger cuando hay bottom nav */
+  .btn-hamburger{display:none!important}
+  .tbar{padding:0 14px}
+}
+
 /* ── LOGIN ── */
 #login-screen{position:fixed;inset:0;background:var(--navy);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
 #login-screen h1{font-family:'Playfair Display',serif;color:var(--goldl);font-size:32px;margin:0}
@@ -400,6 +440,7 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
     <button class="ni" onclick="go('compras')"><span class="ni-ic">🛍</span>Compras</button>
     <button class="ni" onclick="go('itinerario')"><span class="ni-ic">🗓</span>Itinerario</button>
     <button class="ni" onclick="go('alertas')"><span class="ni-ic">🔔</span>Alertas EUR/USD</button>
+    <button class="ni" onclick="go('checklist')"><span class="ni-ic">✅</span>Checklist</button>
     <div class="ngl" style="margin-top:10px">Referencia</div>
     <button class="ni" onclick="go('costos')"><span class="ni-ic">💶</span>Costos por ciudad</button>
     <div class="ngl" style="margin-top:10px">Opciones</div>
@@ -674,6 +715,14 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
       </div>
     </div>
 
+
+    <!-- ══ CHECKLIST ══ -->
+    <div class="sec" id="sec-checklist">
+      <div class="sh">Checklist pre-viaje</div>
+      <div class="ss">Todo lo que tienen que tener listo antes de salir. Tildá cada ítem cuando esté confirmado.</div>
+      <div id="checklist-c"></div>
+    </div>
+
     <!-- ══ COSTOS POR CIUDAD ══ -->
     <div class="sec" id="sec-costos">
       <div class="sh">Costos de referencia por ciudad</div>
@@ -738,7 +787,10 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
           </div>
         </div>
         <div class="div"></div>
-        <button class="btn btn-g" onclick="resetTheme()">↺ Restaurar diseño original</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+  <button class="btn btn-g" onclick="resetTheme()">↺ Restaurar diseño original</button>
+  <button class="btn btn-p" id="dark-toggle" onclick="toggleDark()">🌙 Modo oscuro</button>
+</div>
       </div>
       <div class="card">
         <div class="ch"><div class="ct">☁ Sincronización</div></div>
@@ -752,6 +804,30 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
 
   </div>
 </div>
+
+<div id="bottom-nav">
+  <button class="bn-item on" onclick="go('resumen')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span>Resumen</span>
+  </button>
+  <button class="bn-item" onclick="go('vuelos')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+    <span>Vuelos</span>
+  </button>
+  <button class="bn-item" onclick="go('ciudades')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+    <span>Ciudades</span>
+  </button>
+  <button class="bn-item" onclick="go('compras')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span>Compras</span>
+  </button>
+  <button class="bn-item" onclick="openSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <span>Más</span>
+  </button>
+</div>
+
 </div>
 <div id="toast"></div>
 
@@ -842,6 +918,7 @@ function initState(){
   if(!S.compras||typeof S.compras!=="object")S.compras={};
   if(!S.itinerario||typeof S.itinerario!=="object")S.itinerario={};
   if(!S.alertas||typeof S.alertas!=="object")S.alertas={};
+  if(!S.checklist||typeof S.checklist!=="object")S.checklist={};
   if(typeof S.notas!=="string")S.notas="";
   // eurUsd NO se restaura desde el estado guardado — siempre usa la API del día
   CITIES.forEach(c=>{
@@ -1288,6 +1365,7 @@ const TITLES={resumen:"Resumen del viaje",vuelos:"Vuelos",ciudades:"Ciudades y f
   compras:"Compras del viaje",
   itinerario:"Itinerario día a día",
   alertas:"Alertas de tipo de cambio",
+  checklist:"Checklist pre-viaje",
   costos:"Costos de referencia por ciudad",estilo:"Personalizar apariencia"};
 
 function go(id){
@@ -1296,6 +1374,9 @@ function go(id){
   document.getElementById("sec-"+id).classList.add("on");
   document.querySelectorAll(".ni").forEach(n=>{if(n.getAttribute("onclick")?.includes("'"+id+"'"))n.classList.add("on");});
   document.getElementById("tb-title").textContent=TITLES[id]||id;
+  document.querySelectorAll(".bn-item").forEach(b=>{
+    b.classList.toggle("on",b.getAttribute("onclick")?.includes("'"+id+"'"));
+  });
   if(window.innerWidth<=900)closeSidebar();
 }
 
@@ -1555,6 +1636,72 @@ function onExc(el){
 
 
 
+
+// ── CHECKLIST ──
+const CHECKLIST_ITEMS = [
+  {cat:"📄 Documentación", items:["Pasaportes vigentes (vencimiento +6 meses del regreso)","Fotocopias de pasaportes guardadas aparte","Visas verificadas (UK necesita ETA)","Seguro de viaje contratado","Tarjeta de vacunación (si aplica)"]},
+  {cat:"✈️ Vuelos y transporte", items:["Vuelo BUE→MAD confirmado y con check-in online","Vuelos internos Europa reservados","Asientos asignados en todos los vuelos","Descargada la app de cada aerolínea"]},
+  {cat:"🛏 Alojamientos", items:["Madrid — alojamiento confirmado","Barcelona — alojamiento confirmado","Roma — alojamiento confirmado","París — alojamiento confirmado","Londres — alojamiento confirmado","Direcciones guardadas en el teléfono"]},
+  {cat:"💳 Finanzas", items:["Tarjetas de crédito avisadas al banco (viaje al exterior)","Efectivo en EUR para los primeros días","Billetera virtual (Wise o similar) cargada","Límites de tarjeta revisados"]},
+  {cat:"📱 Tecnología", items:["Plan de datos internacional contratado o SIM local planeada","Adaptador de enchufes europeo","Power bank cargado","Auriculares para los vuelos","Descargados mapas offline (Google Maps)","Descargado Duolingo o similar para idiomas"]},
+  {cat:"🎒 Equipaje", items:["Valijas pesadas y dentro del límite","Artículos prohibidos en cabina revisados","Medicamentos básicos empacados","Ropa de abrigo (Europa marzo-abril puede ser fresco)","Candados para las valijas"]},
+  {cat:"🏛 Reservas de actividades", items:["Coliseo + Foro Romano reservado online","Museos Vaticanos reservado online","Sagrada Família reservado online","Louvre reservado (si quieren evitar fila)","Torre Eiffel reservado (si quieren subir)"]}
+];
+
+function renderChecklist(){
+  const el=document.getElementById("checklist-c");
+  if(!el)return;
+  el.innerHTML="";
+  if(!S.checklist)S.checklist={};
+
+  CHECKLIST_ITEMS.forEach((group,gi)=>{
+    const card=document.createElement("div");card.className="card";
+    const done=group.items.filter((_,ii)=>S.checklist[gi+"_"+ii]).length;
+    const total=group.items.length;
+    const pct=Math.round(done/total*100);
+
+    const items=group.items.map((item,ii)=>{
+      const checked=!!S.checklist[gi+"_"+ii];
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="toggleCheck(${gi},${ii})">
+        <div style="width:20px;height:20px;border-radius:5px;border:2px solid ${checked?'var(--grn)':'var(--border)'};background:${checked?'var(--grn)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s">
+          ${checked?'<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>':''}
+        </div>
+        <span style="font-size:13px;${checked?'text-decoration:line-through;color:var(--muted)':''}">${item}</span>
+      </div>`;
+    }).join("");
+
+    card.innerHTML=`
+      <div class="ch">
+        <div class="ct">${group.cat}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:var(--muted)">${done}/${total}</span>
+          <span class="bx ${pct===100?'bg':pct>50?'ba':'bn'}">${pct}%</span>
+        </div>
+      </div>
+      <div class="pt" style="margin-bottom:12px"><div class="pf" style="width:${pct}%;background:${pct===100?'var(--grn)':'var(--gold)'}"></div></div>
+      ${items}`;
+    el.appendChild(card);
+  });
+
+  // Resumen total
+  const allDone=CHECKLIST_ITEMS.reduce((s,g,gi)=>s+g.items.filter((_,ii)=>S.checklist[gi+"_"+ii]).length,0);
+  const allTotal=CHECKLIST_ITEMS.reduce((s,g)=>s+g.items.length,0);
+  const summary=document.createElement("div");summary.className="card";
+  summary.style.textAlign="center";
+  summary.innerHTML=`
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">PROGRESO TOTAL</div>
+    <div style="font-family:'Playfair Display',serif;font-size:36px;color:${allDone===allTotal?'var(--grn)':'var(--navy)'};">${allDone}/${allTotal}</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:4px">${allDone===allTotal?'✅ ¡Todo listo para el viaje!':'Tareas completadas'}</div>`;
+  el.appendChild(summary);
+}
+
+function toggleCheck(gi,ii){
+  if(!S.checklist)S.checklist={};
+  S.checklist[gi+"_"+ii]=!S.checklist[gi+"_"+ii];
+  renderChecklist();
+  scheduleSave();
+}
+
 // ── ITINERARIO ──
 function renderItinerario(){
   const el=document.getElementById("itinerario-c");
@@ -1683,6 +1830,24 @@ function checkAlertas(){
   if(maxEl&&S.alertas?.max&&!maxEl.value)maxEl.value=S.alertas.max;
 }
 
+
+// ── DARK MODE ──
+function toggleDark(){
+  const isDark=document.body.classList.toggle("dark");
+  if(!S.theme)S.theme={};
+  S.theme.dark=isDark;
+  scheduleSave();
+  const btn=document.getElementById("dark-toggle");
+  if(btn)btn.textContent=isDark?"☀️ Modo claro":"🌙 Modo oscuro";
+}
+function restoreDark(){
+  if(S.theme?.dark){
+    document.body.classList.add("dark");
+    const btn=document.getElementById("dark-toggle");
+    if(btn)btn.textContent="☀️ Modo claro";
+  }
+}
+
 // ── PIE CHART ──
 function drawPie(cats, total){
   const svg=document.getElementById("pie-chart");
@@ -1732,6 +1897,7 @@ function renderAll(){
   renderExcursiones();
   renderCompras();
   renderItinerario();
+  renderChecklist();
   const n=document.getElementById("notas");if(n)n.value=S.notas||"";
 }
 
@@ -1745,6 +1911,7 @@ function renderAll(){
   }finally{
     initState();
     restoreTheme();
+    restoreDark();
     renderAll();
     recalc();
     fetchEurUsd().then(()=>checkAlertas());
