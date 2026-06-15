@@ -349,73 +349,27 @@ select.sel2{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(
 
 /* ── DARK MODE ── */
 body.dark{
-  --cream:#141920;
-  --cream2:#1c2330;
-  --border:#2a3344;
-  --txt:#e2e8f0;
-  --muted:#7a8ba0;
-  --lite:#4a5568;
-  --sh:0 2px 16px rgba(0,0,0,.4);
+  --cream:#1a1f2e;--cream2:#242938;--white:#1e2436;--txt:#e8eaf0;
+  --muted:#8892a4;--lite:#5a6478;--border:#2e3548;
+  --navy:#c9a84c;--navy2:#d4b86a;--navy3:#dfc87a;
+  --goldl:#0f1e35;--gold:#c9a84c;
+  --grn:#3d9e6b;--grn-bg:#1a2e24;
+  --red:#e05c5c;--red-bg:#2e1a1a;
+  --blu:#5b9cf6;--blu-bg:#1a2040;
+  --sh:0 2px 16px rgba(0,0,0,.3)
 }
-
-/* Fondos principales */
-body.dark{background:var(--cream)}
-body.dark .sb{background:#0d1117;border-right:1px solid #1e2736}
-body.dark .tbar{background:#111827;border-color:#1e2736}
-body.dark .card{background:#1a2236;border-color:#2a3344}
-body.dark .cc{background:#1a2236;border-color:#2a3344}
-body.dark .ec{background:#1a2236;border-color:#2a3344}
-body.dark .cost-card{background:#1a2236;border-color:#2a3344}
-body.dark #bottom-nav{background:#111827;border-color:#1e2736}
-body.dark #login-screen{background:#0d1117}
-body.dark .login-box{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
-body.dark #loading-overlay{background:#0d1117}
-
-/* Inputs */
-body.dark .ci{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
-body.dark .ci:focus{background:#111827;border-color:#c9a84c}
-body.dark .ain{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
-body.dark .ain:focus{background:#111827;border-color:#c9a84c}
-body.dark .an{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
-body.dark .an:focus{background:#111827;border-color:#c9a84c}
-body.dark .pi{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
-body.dark select.sel2{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
-body.dark select.ain{background:#0d1117;color:#e2e8f0;border-color:#2a3344}
-body.dark .login-input{background:rgba(255,255,255,.06);color:#e2e8f0}
-
-/* Botones */
-body.dark .btn-g{background:#1a2236;border-color:#2a3344;color:#a0aec0}
-body.dark .btn-g:hover{background:#222e42;color:#e2e8f0}
-body.dark .btn-p{background:#c9a84c;color:#0d1117}
-body.dark .btn-p:hover{filter:brightness(1.1)}
-body.dark .btn-grn{background:#2d7a4f;color:#fff}
-body.dark .btn-red{border-color:#c0392b;color:#e57373;background:transparent}
-body.dark .ot{border-color:#2a3344;color:#7a8ba0}
-body.dark .ot:hover{border-color:#c9a84c;color:#e2e8f0}
-body.dark .ot.on{background:#c9a84c;color:#0d1117;border-color:#c9a84c}
-body.dark .ot.chosen{background:#2d7a4f;color:#fff;border-color:#2d7a4f}
-
-/* Sidebar nav */
-body.dark .ni{color:rgba(255,255,255,.45)}
-body.dark .ni:hover{background:rgba(255,255,255,.06);color:#fff}
-body.dark .ni.on{background:rgba(201,168,76,.2);color:#e8c97e}
-
-/* Misceláneos */
-body.dark .hero{background:#0d1117}
-body.dark .sm{background:rgba(255,255,255,.06)}
-body.dark .cch{background:#1a2236;border-color:#2a3344}
-body.dark .cfoot{background:#111827;border-color:#2a3344}
-body.dark .tip{background:#111827;border-color:#2a3344;color:#7a8ba0}
-body.dark .tip strong{color:#e2e8f0}
-body.dark .bn-item{color:#4a5568}
-body.dark .bn-item.on{color:#c9a84c}
-body.dark .sw.sel{border-color:#c9a84c}
-body.dark #dark-toggle{background:#2a3344;color:#e8c97e;border:1px solid #3a4454}
-body.dark #dark-toggle:hover{background:#3a4454}
-body.dark .pt{background:#1c2330}
-body.dark .bar-t{background:#1c2330}
-body.dark .cost-tip{background:#111827;color:#7a8ba0}
-body.dark .cost-tip strong{color:#e2e8f0}
+body.dark .sb{background:#0d1520}
+body.dark .tbar,body.dark .card,body.dark .cc,body.dark .ec,body.dark .cost-card{background:#1e2436}
+body.dark #bottom-nav{background:#1e2436;border-color:#2e3548}
+body.dark .ci,body.dark .ain,body.dark .an,body.dark .pi{background:#242938;color:var(--txt);border-color:#2e3548}
+body.dark .ci:focus,body.dark .ain:focus{background:#2e3548}
+body.dark #loading-overlay{background:#0d1520}
+body.dark #login-screen{background:#0d1520}
+body.dark .login-box{background:rgba(255,255,255,.04)}
+body.dark .sm{background:rgba(255,255,255,.05)}
+body.dark .hero{background:#0d1520}
+body.dark .cfoot,body.dark .cch{background:#242938}
+body.dark select.sel2,body.dark select.ain{background:#242938;color:var(--txt)}
 
 /* ── BOTTOM NAV ── */
 #bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:#fff;border-top:1px solid var(--border);z-index:150;grid-template-columns:repeat(5,1fr);align-items:center}
@@ -481,6 +435,7 @@ body.dark .cost-tip strong{color:#e2e8f0}
     <button class="ni" onclick="go('vuelos')"><span class="ni-ic">✈</span>Vuelos</button>
     <button class="ni" onclick="go('ciudades')"><span class="ni-ic">🏛</span>Ciudades</button>
     <button class="ni" onclick="go('alojamientos')"><span class="ni-ic">🛏</span>Alojamientos</button>
+    <button class="ni" onclick="go('extras')"><span class="ni-ic">🎭</span>Extras</button>
     <button class="ni" onclick="go('excursiones')"><span class="ni-ic">🗺</span>Excursiones</button>
     <button class="ni" onclick="go('compras')"><span class="ni-ic">🛍</span>Compras</button>
     <button class="ni" onclick="go('itinerario')"><span class="ni-ic">🗓</span>Itinerario</button>
@@ -575,7 +530,10 @@ body.dark .cost-tip strong{color:#e2e8f0}
               <span style="color:var(--muted)">Compras</span>
               <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-compras">$0</span>
             </div>
-  
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--muted)">Extras</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:500" id="h-extra">$0</span>
+            </div>
           </div>
         </div>
 
@@ -670,33 +628,26 @@ body.dark .cost-tip strong{color:#e2e8f0}
       <div id="accom-c"></div>
     </div>
 
-
-
-
-    <!-- ══ ACTIVIDADES (Excursiones + Itinerario) ══ -->
-    <div class="sec" id="sec-actividades">
-      <div class="sh">Excursiones & Plan de viaje</div>
-      <div class="ss">Actividades por ciudad y tu itinerario día a día, todo en un lugar.</div>
-
-      <!-- Tabs internos -->
-      <div style="display:flex;gap:8px;margin-bottom:20px">
-        <button class="ot on" id="act-tab-exc" onclick="switchActTab('exc')">🗺 Excursiones</button>
-        <button class="ot" id="act-tab-plan" onclick="switchActTab('plan')">🗓 Plan día a día</button>
+    <!-- ══ EXTRAS ══ -->
+    <div class="sec" id="sec-extras">
+      <div class="sh">Gastos extra</div>
+      <div class="ss">Seguro de viaje, museos, tours, shopping y otros costos del viaje.</div>
+      <div class="egrid" id="extras-c"></div>
+      <div class="card" style="margin-top:4px">
+        <div class="ch"><div class="ct">Notas personales</div></div>
+        <textarea id="notas" style="width:100%;min-height:88px;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;background:var(--cream);color:var(--txt);outline:none;resize:vertical;line-height:1.6" placeholder="Links a hoteles, ideas para paseos, recordatorios..." oninput="scheduleSave()"></textarea>
       </div>
+    </div>
 
-      <!-- Panel Excursiones -->
-      <div id="act-panel-exc">
-        <div class="tip">💡 Cargá el costo estimado por actividad en USD. Podés poner el link de reserva para tenerlo a mano.</div>
-        <div id="excursiones-c"></div>
-        <div class="card" style="margin-top:4px">
-          <div class="ch"><div class="ct">💰 Total excursiones</div><div class="cv" id="tot-excursiones">$0</div></div>
-        </div>
-      </div>
 
-      <!-- Panel Itinerario -->
-      <div id="act-panel-plan" style="display:none">
-        <div class="tip">💡 Las fechas se toman de la sección Ciudades. Anotá qué hacen cada día — museos, restaurantes, reservas.</div>
-        <div id="itinerario-c"></div>
+    <!-- ══ EXCURSIONES ══ -->
+    <div class="sec" id="sec-excursiones">
+      <div class="sh">Excursiones & Experiencias</div>
+      <div class="ss">Actividades, parques, museos y tours por ciudad. Se suman al total del viaje.</div>
+      <div class="tip">💡 Cargá el costo total estimado por actividad. Podés poner el link de reserva para tenerlo a mano. Todo en USD.</div>
+      <div id="excursiones-c"></div>
+      <div class="card" style="margin-top:4px">
+        <div class="ch"><div class="ct">💰 Total excursiones</div><div class="cv" id="tot-excursiones">$0</div></div>
       </div>
     </div>
 
@@ -718,6 +669,14 @@ body.dark .cost-tip strong{color:#e2e8f0}
       </div>
     </div>
 
+
+    <!-- ══ ITINERARIO ══ -->
+    <div class="sec" id="sec-itinerario">
+      <div class="sh">Itinerario día a día</div>
+      <div class="ss">Qué hacen cada día del viaje. Se genera automáticamente según las fechas de cada ciudad.</div>
+      <div class="tip">💡 Las fechas se toman de la sección Ciudades. Podés agregar una nota para cada día — qué visitar, dónde comer, reservas.</div>
+      <div id="itinerario-c"></div>
+    </div>
 
     <!-- ══ ALERTAS ══ -->
     <div class="sec" id="sec-alertas">
@@ -1295,10 +1254,10 @@ function recalc(){
   const excT=EXCURSION_CITIES.reduce((s,city)=>{
     return s+(S.excursiones&&S.excursiones[city.id]?S.excursiones[city.id].reduce((ss,it)=>ss+(parseFloat(it.cost)||0),0):0);
   },0);
-  const grand=intlT+euT+alojT+gastoT+excT+comprasT;
+  const grand=intlT+euT+alojT+gastoT+extraT+excT+comprasT;
 
   const baseT=intlT+euT+alojT;
-  const destinoT=gastoT+excT+comprasT;
+  const destinoT=gastoT+excT+comprasT+extraT;
   document.getElementById("sb-tot").textContent=f$(grand);
   document.getElementById("h-tot").textContent=f$(grand);
   document.getElementById("h-sub").textContent=grand>0?`${f$(grand/26)} por día · 26 días`:"Completá los datos en cada sección";
@@ -1310,6 +1269,7 @@ function recalc(){
   document.getElementById("h-gasto").textContent=f$(gastoT);
   document.getElementById("h-exc").textContent=f$(excT);
   document.getElementById("h-compras").textContent=f$(comprasT);
+  document.getElementById("h-extra").textContent=f$(extraT);
   document.getElementById("tot-intl").textContent=f$(intlT);
   document.getElementById("tot-eu").textContent=f$(euT);
 
@@ -1493,8 +1453,6 @@ function renderCompras(){
   const el=document.getElementById("compras-c");
   if(!el)return;
   el.innerHTML="";
-  // Guarda: asegurarse que S.compras existe
-  if(!S.compras||typeof S.compras!=="object")S.compras={};
   const personas=["agus","ivan"];
   const personaLabel={"agus":"👩 Agus","ivan":"👨 Ivan"};
   const rate=getEurUsd();
@@ -1502,7 +1460,7 @@ function renderCompras(){
   COMPRAS_CATS.forEach(cat=>{
     personas.forEach(p=>{
       const key=cat.id+"_"+p;
-      if(!S.compras[key]||!Array.isArray(S.compras[key]))S.compras[key]=[];
+      if(!S.compras[key])S.compras[key]=[];
       while(S.compras[key].length<2)S.compras[key].push({name:"",cost:"",nota:""});
     });
 
@@ -1610,7 +1568,6 @@ function renderExcursiones(){
   const el=document.getElementById("excursiones-c");
   if(!el)return;
   el.innerHTML="";
-  if(!S.excursiones||typeof S.excursiones!=="object")S.excursiones={};
   EXCURSION_CITIES.forEach(city=>{
     const items=S.excursiones[city.id]||[];
     // ensure 3 slots min
@@ -1695,7 +1652,7 @@ function renderChecklist(){
   const el=document.getElementById("checklist-c");
   if(!el)return;
   el.innerHTML="";
-  if(!S.checklist||typeof S.checklist!=="object")S.checklist={};
+  if(!S.checklist)S.checklist={};
 
   CHECKLIST_ITEMS.forEach((group,gi)=>{
     const card=document.createElement("div");card.className="card";
@@ -1745,22 +1702,12 @@ function toggleCheck(gi,ii){
   scheduleSave();
 }
 
-
-// ── ACTIVIDADES TABS ──
-function switchActTab(tab){
-  document.getElementById("act-panel-exc").style.display = tab==="exc"?"block":"none";
-  document.getElementById("act-panel-plan").style.display = tab==="plan"?"block":"none";
-  document.getElementById("act-tab-exc").className = "ot"+(tab==="exc"?" on":"");
-  document.getElementById("act-tab-plan").className = "ot"+(tab==="plan"?" on":"");
-  if(tab==="plan") renderItinerario();
-}
-
 // ── ITINERARIO ──
 function renderItinerario(){
   const el=document.getElementById("itinerario-c");
   if(!el)return;
   el.innerHTML="";
-  if(!S.itinerario||typeof S.itinerario!=="object")S.itinerario={};
+  if(!S.itinerario)S.itinerario={};
 
   // Generar días por ciudad según fechas
   CITIES.forEach(city=>{
@@ -1951,48 +1898,28 @@ function renderAll(){
   renderCompras();
   renderItinerario();
   renderChecklist();
+  const n=document.getElementById("notas");if(n)n.value=S.notas||"";
 }
 
 // ══════════════════════════ INIT ═════════════════════════════════════
-function hideOverlay(){
+(async()=>{
+  document.getElementById("loading-msg").textContent="Cargando datos sincronizados…";
   try{
-    var o=document.getElementById("loading-overlay");
-    var a=document.getElementById("app");
-    if(o)o.style.display="none";
-    if(a)a.style.display="flex";
-    setSyncStatus("ok","Listo ✓");
-    var ls=document.getElementById("login-screen");
-    if(ls&&sessionStorage.getItem(LOGIN_KEY)!=="1"){
-      ls.style.display="flex";
-      var inp=document.getElementById("login-input");
-      if(inp)setTimeout(function(){inp.focus();},100);
-    }
-  }catch(e){console.warn("hideOverlay error:",e);}
-}
-
-function startApp(){
-  try{
+    await loadFromCloud();
+  }catch(e){
+    console.warn("Init load error:",e);
+  }finally{
     initState();
     restoreTheme();
     restoreDark();
     renderAll();
     recalc();
-    fetchEurUsd().then(function(){checkAlertas();});
-  }catch(e){console.warn("startApp error:",e);}
-  hideOverlay();
-}
-
-// Safety: mostrar app en 4s pase lo que pase
-var _safety=window.setTimeout(function(){startApp();},4000);
-
-// Cargar datos y arrancar
-loadFromCloud().then(function(){
-  window.clearTimeout(_safety);
-  startApp();
-}).catch(function(){
-  window.clearTimeout(_safety);
-  startApp();
-});
+    fetchEurUsd().then(()=>checkAlertas());
+    document.getElementById("loading-overlay").style.display="none";
+    document.getElementById("app").style.display="flex";
+    setSyncStatus("ok","Listo ✓");
+  }
+})();
 
 // ── SIDEBAR DRAWER (mobile) ──
 function openSidebar(){
@@ -2078,8 +2005,6 @@ function checkLogin(){
   if(!inp||!ls)return;
   // Si ya autenticó, ocultar de una
   if(sessionStorage.getItem(LOGIN_KEY)==="1"){ls.style.display="none";return;}
-  // Ocultar login mientras carga el overlay — se muestra cuando hideOverlay() corre
-  ls.style.display="none";
   // Auto-submit al 4to dígito
   inp.addEventListener("input",e=>{
     if(e.target.value.length===LOGIN_PASS.length)checkLogin();
@@ -2087,6 +2012,7 @@ function checkLogin(){
   inp.addEventListener("keydown",e=>{
     if(e.key==="Enter")checkLogin();
   });
+  inp.focus();
 })();
 
 </script>
