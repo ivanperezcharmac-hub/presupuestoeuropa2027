@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --navy: #0f1e35;
+  --gold: #c9a84c;
+  --goldl: #e8c97e;
+  --cream: #f5f0e8;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--navy);
+}
+
+.font-display { font-family: 'Playfair Display', serif; }
+.font-mono-dm { font-family: 'DM Mono', monospace; }
