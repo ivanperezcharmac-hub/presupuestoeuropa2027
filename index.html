@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-06-15 00:45 -->
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1493,6 +1493,8 @@ function renderCompras(){
   const el=document.getElementById("compras-c");
   if(!el)return;
   el.innerHTML="";
+  // Guarda: asegurarse que S.compras existe
+  if(!S.compras||typeof S.compras!=="object")S.compras={};
   const personas=["agus","ivan"];
   const personaLabel={"agus":"👩 Agus","ivan":"👨 Ivan"};
   const rate=getEurUsd();
@@ -1500,7 +1502,7 @@ function renderCompras(){
   COMPRAS_CATS.forEach(cat=>{
     personas.forEach(p=>{
       const key=cat.id+"_"+p;
-      if(!S.compras[key])S.compras[key]=[];
+      if(!S.compras[key]||!Array.isArray(S.compras[key]))S.compras[key]=[];
       while(S.compras[key].length<2)S.compras[key].push({name:"",cost:"",nota:""});
     });
 
@@ -1608,6 +1610,7 @@ function renderExcursiones(){
   const el=document.getElementById("excursiones-c");
   if(!el)return;
   el.innerHTML="";
+  if(!S.excursiones||typeof S.excursiones!=="object")S.excursiones={};
   EXCURSION_CITIES.forEach(city=>{
     const items=S.excursiones[city.id]||[];
     // ensure 3 slots min
@@ -1692,7 +1695,7 @@ function renderChecklist(){
   const el=document.getElementById("checklist-c");
   if(!el)return;
   el.innerHTML="";
-  if(!S.checklist)S.checklist={};
+  if(!S.checklist||typeof S.checklist!=="object")S.checklist={};
 
   CHECKLIST_ITEMS.forEach((group,gi)=>{
     const card=document.createElement("div");card.className="card";
@@ -1757,7 +1760,7 @@ function renderItinerario(){
   const el=document.getElementById("itinerario-c");
   if(!el)return;
   el.innerHTML="";
-  if(!S.itinerario)S.itinerario={};
+  if(!S.itinerario||typeof S.itinerario!=="object")S.itinerario={};
 
   // Generar días por ciudad según fechas
   CITIES.forEach(city=>{
