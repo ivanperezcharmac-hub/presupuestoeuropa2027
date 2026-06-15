@@ -1955,42 +1955,44 @@ function renderAll(){
 
 // ══════════════════════════ INIT ═════════════════════════════════════
 function hideOverlay(){
-  const o=document.getElementById("loading-overlay");
-  const a=document.getElementById("app");
-  if(o)o.style.display="none";
-  if(a)a.style.display="flex";
-  setSyncStatus("ok","Listo ✓");
-  // Mostrar login si no autenticado
-  const ls=document.getElementById("login-screen");
-  if(ls&&sessionStorage.getItem(LOGIN_KEY)!=="1"){
-    ls.style.display="flex";
-    const inp=document.getElementById("login-input");
-    if(inp)setTimeout(()=>inp.focus(),100);
-  }
+  try{
+    var o=document.getElementById("loading-overlay");
+    var a=document.getElementById("app");
+    if(o)o.style.display="none";
+    if(a)a.style.display="flex";
+    setSyncStatus("ok","Listo ✓");
+    var ls=document.getElementById("login-screen");
+    if(ls&&sessionStorage.getItem(LOGIN_KEY)!=="1"){
+      ls.style.display="flex";
+      var inp=document.getElementById("login-input");
+      if(inp)setTimeout(function(){inp.focus();},100);
+    }
+  }catch(e){console.warn("hideOverlay error:",e);}
 }
 
-// Timeout de seguridad: si en 3s no cargó, mostrar igual
-const _safetyTimer=setTimeout(()=>{
-  hideOverlay();
-},3000);
-
-(async()=>{
-  document.getElementById("loading-msg").textContent="Cargando datos sincronizados…";
+function startApp(){
   try{
-    await loadFromCloud();
-  }catch(e){
-    console.warn("Init load error:",e);
-  }finally{
-    clearTimeout(_safetyTimer);
     initState();
     restoreTheme();
     restoreDark();
     renderAll();
     recalc();
-    fetchEurUsd().then(()=>checkAlertas());
-    hideOverlay();
-  }
-})();
+    fetchEurUsd().then(function(){checkAlertas();});
+  }catch(e){console.warn("startApp error:",e);}
+  hideOverlay();
+}
+
+// Safety: mostrar app en 4s pase lo que pase
+var _safety=window.setTimeout(function(){startApp();},4000);
+
+// Cargar datos y arrancar
+loadFromCloud().then(function(){
+  window.clearTimeout(_safety);
+  startApp();
+}).catch(function(){
+  window.clearTimeout(_safety);
+  startApp();
+});
 
 // ── SIDEBAR DRAWER (mobile) ──
 function openSidebar(){
