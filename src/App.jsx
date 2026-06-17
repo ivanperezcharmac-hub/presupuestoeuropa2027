@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useEffect, useRef } from 'react';
 import { AppProvider, useApp, f$ } from './context/AppContext';
 import { CITIES, INTL_FLIGHTS, EURO_FLIGHTS, COMPRAS_CATS, EXCURSION_CITIES } from './data/constants';
 import LoginScreen from './components/LoginScreen';
@@ -31,11 +31,37 @@ const BOTTOM_NAV = [
   {id:'sidebar',label:'Más',Icon:MenuIcon},
 ];
 
+const SECTIONS = ['resumen','vuelos','ciudades','alojamientos','actividades','compras','alertas','checklist','costos','estilo'];
+
 function AppInner() {
   const {state,loading,syncStatus,eurUsd,setEurUsd} = useApp();
   const [authed,setAuthed] = useState(false);
   const [current,setCurrent] = useState('resumen');
   const [sidebarOpen,setSidebarOpen] = useState(false);
+
+  const touchStartX = useRef(null);
+
+  useEffect(() => {
+    function onTouchStart(e) {
+      touchStartX.current = e.touches[0].clientX;
+    }
+    function onTouchEnd(e) {
+      if (touchStartX.current === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      touchStartX.current = null;
+      if (Math.abs(dx) < 60) return; // threshold mínimo
+      if (sidebarOpen) return;       // no swipear con sidebar abierto
+      const idx = SECTIONS.indexOf(current);
+      if (dx < 0 && idx < SECTIONS.length - 1) setCurrent(SECTIONS[idx + 1]); // swipe izquierda → siguiente
+      if (dx > 0 && idx > 0) setCurrent(SECTIONS[idx - 1]);                   // swipe derecha → anterior
+    }
+    document.addEventListener('touchstart', onTouchStart, { passive: true });
+    document.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      document.removeEventListener('touchstart', onTouchStart);
+      document.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [current, sidebarOpen]);
 
   const total = (() => {
     if(!state) return '$0';
