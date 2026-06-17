@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useApp, cityDays, f$ } from '../context/AppContext';
 import { CITIES, INTL_FLIGHTS, EURO_FLIGHTS, COMPRAS_CATS, EXCURSION_CITIES } from '../data/constants';
 
@@ -61,6 +61,7 @@ function PieChart({ cats, total }) {
 export default function Resumen() {
   const t = useTotals();
   const { state, eurUsd } = useApp();
+  const [showFlights, setShowFlights] = useState(false);
 
   const cats = [
     { l: "Vuelos int'l", v: t.intlT, c: '#0f1e35' },
@@ -93,6 +94,29 @@ export default function Resumen() {
           <div className="font-display text-3xl mb-3" style={{ color: 'var(--navy)' }}>{f$(t.baseT)}</div>
           <Row label="Vuelos int'l" value={f$(t.intlT + t.euT)} />
           <Row label="Alojamiento" value={f$(t.alojT)} />
+          <button
+            onClick={() => setShowFlights(v => !v)}
+            className="mt-2 text-xs font-medium flex items-center gap-1"
+            style={{ color: 'var(--blue,#1B4FD8)' }}
+          >
+            {showFlights ? '▲ Ocultar vuelos' : '▼ Ver detalle de vuelos'}
+          </button>
+          {showFlights && (
+            <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border)' }}>
+              {[...INTL_FLIGHTS, ...EURO_FLIGHTS].map(f => {
+                const price = parseFloat(state.prices?.[f.id]) || 0;
+                return (
+                  <div key={f.id} className="py-1.5" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-xs font-medium" style={{ color: 'var(--navy)' }}>{f.route}</span>
+                      <span className="font-mono-dm text-xs ml-2 shrink-0">{price > 0 ? `$${Math.round(price).toLocaleString('es-AR')}` : '—'}</span>
+                    </div>
+                    <div className="text-[11px]" style={{ color: 'var(--muted)' }}>{f.date} · {f.note}</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </Card>
         <Card borderTop="var(--grn, #2d7a4f)">
           <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--muted)' }}>🌍 En destino</div>
