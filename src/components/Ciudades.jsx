@@ -13,6 +13,12 @@ function CityCard({ city }) {
     setState(s => ({ ...s, cities: { ...s.cities, [city.id]: { ...s.cities?.[city.id], [field]: value } } }));
   }
 
+  function updateNote(value) {
+    setState(s => ({ ...s, cityNotes: { ...s.cityNotes, [city.id]: value } }));
+  }
+
+  const noteVal = state?.cityNotes?.[city.id] || '';
+
   return (
     <div className="rounded-2xl overflow-hidden" style={{ background: '#fff', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
       <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
@@ -47,6 +53,17 @@ function CityCard({ city }) {
               style={{ border: '1.5px solid var(--border)', background: 'var(--cream)' }} />
           </div>
         ))}
+        <div>
+          <label className="text-xs font-semibold uppercase tracking-wider block mb-1" style={{ color: 'var(--muted)' }}>Notas</label>
+          <textarea
+            placeholder="Tips, restaurantes, lugares que no perderse..."
+            value={noteVal}
+            onChange={e => updateNote(e.target.value)}
+            rows={3}
+            className="w-full px-3 py-2 rounded-lg text-sm outline-none transition-all resize-none"
+            style={{ border: '1.5px solid var(--border)', background: 'var(--cream)', lineHeight: '1.5' }}
+          />
+        </div>
       </div>
       <div className="flex justify-between items-center px-4 py-2.5" style={{ background: 'var(--cream)', borderTop: '1px solid var(--border)' }}>
         <span className="text-xs" style={{ color: 'var(--muted)' }}>Subtotal {city.name}</span>

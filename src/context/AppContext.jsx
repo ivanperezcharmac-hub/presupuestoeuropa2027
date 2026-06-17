@@ -15,6 +15,7 @@ function initState(raw = {}) {
   if (!s.alertas || typeof s.alertas !== 'object') s.alertas = {};
   if (!s.checklist || typeof s.checklist !== 'object') s.checklist = {};
   if (typeof s.notas !== 'string') s.notas = '';
+  if (!s.cityNotes || typeof s.cityNotes !== 'object') s.cityNotes = {};
   if (!s.theme || typeof s.theme !== 'object') s.theme = {};
 
   CITIES.forEach(c => {
