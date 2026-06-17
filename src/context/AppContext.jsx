@@ -83,6 +83,7 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [syncStatus, setSyncStatus] = useState('loading'); // loading | saving | ok | error
   const [eurUsd, setEurUsd] = useState(1.165);
+  const [eurUsdUpdatedAt, setEurUsdUpdatedAt] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const saveTimer = useRef(null);
 
@@ -108,7 +109,7 @@ export function AppProvider({ children }) {
       for (const api of apis) {
         try {
           const rate = await api();
-          if (rate && rate > 0.5 && rate < 3) { setEurUsd(rate); return; }
+          if (rate && rate > 0.5 && rate < 3) { setEurUsd(rate); setEurUsdUpdatedAt(new Date()); return; }
         } catch { continue; }
       }
     })();
@@ -140,7 +141,7 @@ export function AppProvider({ children }) {
   }, [setState]);
 
   return (
-    <AppContext.Provider value={{ state, setState, loading, syncStatus, eurUsd, setEurUsd, darkMode, toggleDark }}>
+    <AppContext.Provider value={{ state, setState, loading, syncStatus, eurUsd, setEurUsd, eurUsdUpdatedAt, darkMode, toggleDark }}>
       {children}
     </AppContext.Provider>
   );
