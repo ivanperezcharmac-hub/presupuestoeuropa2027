@@ -4,6 +4,7 @@ import { CITIES, INTL_FLIGHTS, EURO_FLIGHTS, COMPRAS_CATS, EXCURSION_CITIES } fr
 import LoginScreen from './components/LoginScreen';
 import Sidebar from './components/Sidebar';
 import Resumen from './components/Resumen';
+import CurrencyConverter from './components/CurrencyConverter';
 
 const Vuelos = lazy(() => import('./components/Vuelos'));
 const Ciudades = lazy(() => import('./components/Ciudades'));
@@ -14,7 +15,6 @@ const Alertas = lazy(() => import('./components/Alertas'));
 const Checklist = lazy(() => import('./components/Checklist'));
 const Costos = lazy(() => import('./components/Costos'));
 const Estilo = lazy(() => import('./components/Estilo'));
-import CurrencyConverter from './components/CurrencyConverter';
 
 const TITLES = {
   resumen:'Resumen del viaje',vuelos:'Vuelos',ciudades:'Ciudades y fechas',
