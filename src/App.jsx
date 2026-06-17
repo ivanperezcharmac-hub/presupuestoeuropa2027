@@ -14,6 +14,7 @@ const Alertas = lazy(() => import('./components/Alertas'));
 const Checklist = lazy(() => import('./components/Checklist'));
 const Costos = lazy(() => import('./components/Costos'));
 const Estilo = lazy(() => import('./components/Estilo'));
+import CurrencyConverter from './components/CurrencyConverter';
 
 const TITLES = {
   resumen:'Resumen del viaje',vuelos:'Vuelos',ciudades:'Ciudades y fechas',
@@ -114,6 +115,7 @@ function AppInner() {
           </button>
         ))}
       </div>
+      <CurrencyConverter />
     </div>
   );
 }
