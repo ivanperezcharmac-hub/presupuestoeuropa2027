@@ -41,6 +41,8 @@ function AppInner() {
 
   const touchStartX = useRef(null);
 
+  const isReadOnly = new URLSearchParams(window.location.search).get('ver') === '1';
+
   useEffect(() => {
     function onTouchStart(e) {
       touchStartX.current = e.touches[0].clientX;
@@ -120,6 +122,18 @@ function AppInner() {
           50%{opacity:1;}
         }
       `}</style>
+    </div>
+  );
+
+  if(isReadOnly) return (
+    <div className="min-h-screen" style={{background:'var(--bg,#F4F6F8)'}}>
+      <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14" style={{background:'#fff',borderBottom:'1px solid var(--border,#E2E8F0)'}}>
+        <div className="font-display font-bold text-sm" style={{color:'var(--navy)'}}>✈ Europa 2027</div>
+        <div className="text-xs" style={{color:'var(--muted)'}}>Solo lectura</div>
+      </div>
+      <div className="px-4 lg:px-8 py-6 max-w-4xl mx-auto">
+        <Resumen/>
+      </div>
     </div>
   );
 
