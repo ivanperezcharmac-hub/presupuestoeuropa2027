@@ -16,6 +16,9 @@ export default function CurrencyConverter() {
   const [lastEdited, setLastEdited] = useState('eur');
   const panelRef = useRef(null);
   const fabRef = useRef(null);
+  const lastEditedRef = useRef('eur');
+  const eurValRef = useRef('');
+  const usdValRef = useRef('');
 
   // Cerrar al tocar fuera del panel y del FAB
   useEffect(() => {
@@ -32,37 +35,40 @@ export default function CurrencyConverter() {
     };
   }, [open]);
 
-  // Recalcular si cambia la tasa mientras el panel está abierto
+  // Recalcular si cambia la tasa — usa refs para evitar stale closure
   useEffect(() => {
-    if (lastEdited === 'eur' && eurVal !== '') {
-      const n = parseFloat(eurVal);
-      if (!isNaN(n)) setUsdVal((n * eurUsd).toFixed(2));
-    } else if (lastEdited === 'usd' && usdVal !== '') {
-      const n = parseFloat(usdVal);
-      if (!isNaN(n)) setEurVal((n / eurUsd).toFixed(2));
+    if (lastEditedRef.current === 'eur' && eurValRef.current !== '') {
+      const n = parseFloat(eurValRef.current);
+      if (!isNaN(n) && n >= 0) setUsdVal((n * eurUsd).toFixed(2));
+    } else if (lastEditedRef.current === 'usd' && usdValRef.current !== '') {
+      const n = parseFloat(usdValRef.current);
+      if (!isNaN(n) && n >= 0) setEurVal((n / eurUsd).toFixed(2));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eurUsd]);
 
   function handleEurChange(e) {
     const v = e.target.value;
-    setEurVal(v);
-    setLastEdited('eur');
+    setEurVal(v); eurValRef.current = v;
+    setLastEdited('eur'); lastEditedRef.current = 'eur';
     const n = parseFloat(v);
-    setUsdVal(isNaN(n) || v === '' ? '' : (n * eurUsd).toFixed(2));
+    setUsdVal(isNaN(n) || n < 0 || v === '' ? '' : (n * eurUsd).toFixed(2));
   }
 
   function handleUsdChange(e) {
     const v = e.target.value;
-    setUsdVal(v);
-    setLastEdited('usd');
+    setUsdVal(v); usdValRef.current = v;
+    setLastEdited('usd'); lastEditedRef.current = 'usd';
     const n = parseFloat(v);
-    setEurVal(isNaN(n) || v === '' ? '' : (n / eurUsd).toFixed(2));
+    setEurVal(isNaN(n) || n < 0 || v === '' ? '' : (n / eurUsd).toFixed(2));
   }
 
   function handleFabClick() {
     setOpen(prev => {
-      if (!prev) { setEurVal(''); setUsdVal(''); setLastEdited('eur'); }
+      if (!prev) {
+        setEurVal(''); eurValRef.current = '';
+        setUsdVal(''); usdValRef.current = '';
+        setLastEdited('eur'); lastEditedRef.current = 'eur';
+      }
       return !prev;
     });
   }
@@ -103,7 +109,6 @@ export default function CurrencyConverter() {
               placeholder="0"
               value={eurVal}
               onChange={handleEurChange}
-              autoFocus
               className="flex-1 rounded-lg px-2 py-1.5 text-right font-mono text-sm font-semibold outline-none"
               style={{
                 border: '1.5px solid var(--blue,#1B4FD8)',
