@@ -77,6 +77,17 @@ export default function Ciudades() {
   const { state } = useApp();
   const daysUsed = CITIES.reduce((s, c) => s + cityDays(state?.cities, c.id), 0);
 
+  const conflicts = [];
+  for (let i = 0; i < CITIES.length - 1; i++) {
+    const curr = CITIES[i];
+    const next = CITIES[i + 1];
+    const currOut = state?.cities?.[curr.id]?.checkOut || curr.defOut;
+    const nextIn  = state?.cities?.[next.id]?.checkIn  || next.defIn;
+    if (currOut > nextIn) {
+      conflicts.push(`${curr.name} (sale ${currOut}) antes de que llegues a ${next.name} (entrada ${nextIn})`);
+    }
+  }
+
   return (
     <div>
       <h1 className="font-display text-2xl font-bold mb-1">Ciudades</h1>
@@ -84,6 +95,14 @@ export default function Ciudades() {
       <div className="text-xs p-3 rounded-xl mb-6" style={{ background: 'var(--cream)', border: '1px solid var(--border)', color: 'var(--muted)' }}>
         💡 Rango del viaje: <strong style={{ color: 'var(--txt)' }}>17 mar → 11 abr 2027</strong>. El subtotal = días × (hotel/noche + gastos/día).
       </div>
+      {conflicts.length > 0 && (
+        <div className="rounded-xl p-3 mb-4" style={{ background: '#fff3cd', border: '1px solid #e6c84a', color: '#7a5c00' }}>
+          <div className="text-xs font-bold mb-1">⚠ Fechas superpuestas</div>
+          {conflicts.map((msg, i) => (
+            <div key={i} className="text-xs">{msg}</div>
+          ))}
+        </div>
+      )}
       <div className="grid sm:grid-cols-2 gap-4 mb-4">
         {CITIES.map(city => <CityCard key={city.id} city={city} />)}
       </div>
