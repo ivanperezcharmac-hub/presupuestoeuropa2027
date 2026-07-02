@@ -207,40 +207,55 @@ privada, uso intensivo en iPhone):
 
 ---
 
-## 🔜 Mejoras pendientes (pedidas por el usuario, no implementadas aun)
+## ✅ Mejoras implementadas (todas completas al 2026-06-17)
 
-Estas 7 mejoras fueron acordadas pero la sesion se corto antes de empezar a programarlas.
-Quedan como backlog para la proxima sesion de trabajo (probablemente en Claude Code):
+Las 7 mejoras del backlog anterior fueron todas implementadas en la misma sesion:
 
-1. **Conversor rapido EUR↔USD** — widget/calculadora inline accesible desde cualquier seccion
-   de la app (pensado como widget flotante en `App.jsx`, no como pantalla aparte).
-2. **Notas por ciudad** — campo de texto libre por ciudad en `Ciudades.jsx` (tips, restaurantes,
-   cosas que no quieren perderse). Necesita un nuevo campo en el estado, ej.
-   `state.cityNotes[cityId]`.
-3. **Resumen de vuelos en pantalla Resumen** — hoy `Resumen.jsx` solo muestra el total en USD de
-   vuelos; falta mostrar ahi mismo hora de salida/llegada de cada tramo (reutilizando la logica
-   de `computeArrival()` de `Vuelos.jsx`, probablemente conviene moverla a un helper compartido).
-4. **Animacion de carga mejorada** — hoy el loading screen en `App.jsx` usa un spinner generico;
-   cambiar a una animacion de avion recorriendo una ruta (SVG animado, en linea con el
-   `coin-ring` de Resumen).
-5. **Swipe entre secciones** en mobile — hoy la navegacion es solo por bottom nav / sidebar:
-   agregar gesto de swipe horizontal para cambiar de seccion en mobile.
-6. **Vista de solo lectura** — una URL sin contraseña para compartir con familia, mostrando
-   unicamente Resumen. Requiere logica nueva de routing/auth (ej. un query param o ruta especial
-   que saltee `LoginScreen` y solo monte `<Resumen />` en modo read-only, sin sidebar ni
-   navegacion).
-7. **Validacion de coherencia de fechas** — avisar si un vuelo sale antes de que termine/llegue
-   el anterior (ej. el tramo BCN→ROM con fecha anterior a la llegada real a Barcelona). Logica
-   natural a agregar en `Vuelos.jsx` o como funcion derivada en `AppContext.jsx`, comparando
-   `getCityDates()` de ciudades consecutivas contra las fechas de los vuelos que las conectan.
+1. **Conversor rapido EUR↔USD** — `CurrencyConverter.jsx`, FAB flotante montado en `App.jsx`.
+   Usa el `eurUsd` live del contexto. Fix aplicado: stale closure, valores negativos, sin
+   autoFocus.
+2. **Notas por ciudad** — campo de texto libre en `Ciudades.jsx`, estado en
+   `state.cityNotes[cityId]`, con null guard en `initState()`.
+3. **Detalle de vuelos en Resumen** — bloque colapsable en `Resumen.jsx` con hora de salida,
+   llegada calculada y numero de vuelo de cada tramo.
+4. **Animacion de avion en loading** — `App.jsx` muestra un avion SVG con animacion
+   `plane-float` (1.4s ease-in-out infinite) en lugar del spinner generico.
+5. **Swipe entre secciones** — listeners `touchstart`/`touchend` en `App.jsx` con umbral de
+   desplazamiento; desactivado cuando el sidebar esta abierto.
+6. **Vista de solo lectura** — query param `?ver=1` saltea el login y monta solo `<Resumen />`
+   sin sidebar ni navegacion. URL compartible con familia.
+7. **Validacion de coherencia de fechas** — aviso en `Ciudades.jsx` si un tramo sale antes de
+   la llegada calculada a esa ciudad.
 
-**Estado en el momento del corte:** ninguna de las 7 tiene codigo escrito todavia. Es el punto
-exacto donde continuar la proxima sesion.
+## Mejoras de UX/diseño posteriores (2026-06-17, misma sesion)
+
+- **Safe-area iPhone** — `viewport-fit=cover` en `index.html`, bottom nav con
+  `env(safe-area-inset-bottom)` en `index.css`.
+- **Dark mode completo** — `var(--surface)` en todas las cards, `var(--txt)` en amounts, tabs
+  azules activos, tags green/red adaptados al modo oscuro.
+- **Hero con avion animado** — imagen/animacion en pantalla principal (Resumen).
+- **Sidebar con nombres Agus & Ivan** — personalizacion visual en el sidebar.
+- **Inputs de hora grandes** — mejor UX en mobile para los campos de hora en Vuelos.
+- **Destino expandible** — en Vuelos, el detalle del tramo se puede colapsar/expandir.
+- **FAB position fix** — posicion del conversor ajustada para no tapar el bottom nav en iPhone.
+- **Route strip scrollable** — la franja de rutas/ciudades en Resumen es scrollable en mobile.
+
+## Backlog actual
+
+No hay mejoras pendientes conocidas al 2026-06-17. Continuar desde aqui en la proxima sesion.
 
 ---
 
 ## Historial de cambios
 
+2026-06-17 — Dark mode fix completo: var(--surface) en cards, var(--txt) en amounts, tabs
+  azules, tags green/red adaptados. Safe-area iPhone (viewport-fit=cover, env() en bottom nav).
+  Mobile: cards apilados, route strip scrollable, FAB del conversor reposicionado.
+  Hero con avion animado, sidebar con Agus & Ivan, inputs de hora grandes en Vuelos,
+  destino expandible por tramo.
+2026-06-17 — 7 mejoras implementadas: conversor EUR↔USD FAB, notas por ciudad, detalle vuelos
+  en Resumen, animacion de avion en loading, swipe entre secciones, vista solo lectura (?ver=1),
+  validacion coherencia de fechas. Script de deploy automatico (deploy.sh).
 2026-06-17 — Vuelos: hora de salida + numero de vuelo + llegada calculada automaticamente
   (duracion + diferencia de zona horaria), con indicador +1d si cruza medianoche.
 2026-06-17 — Vuelos: opcion de escalas (toggle directo/con escala), multiples escalas por
