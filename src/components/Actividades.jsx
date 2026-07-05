@@ -25,35 +25,35 @@ function ExcursionesTab() {
         const items = state?.excursiones?.[city.id] || [];
         const total = items.reduce((s,it)=>s+(parseFloat(it.cost)||0),0);
         return (
-          <div key={city.id} className="rounded-2xl p-4 mb-4" style={{ background: '#fff', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
+          <div key={city.id} className="rounded-2xl p-4 mb-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
             <div className="flex justify-between items-center mb-3 pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
               <div className="font-semibold text-sm">{city.flag} {city.name}</div>
-              <div className="font-mono-dm text-base font-semibold" style={{ color: 'var(--navy)' }}>{f$(total)}</div>
+              <div className="font-mono-dm text-base font-semibold" style={{ color: 'var(--txt)' }}>{f$(total)}</div>
             </div>
             {items.map((it,i)=>(
               <div key={i} className="grid gap-2 py-2 border-b last:border-0" style={{ gridTemplateColumns: '1fr 80px 1fr auto', alignItems: 'center', borderColor: 'var(--border)' }}>
                 <input type="text" placeholder={city.suggestions[i] || 'Actividad...'} value={it.name||''} onChange={e=>updateRow(city.id,i,'name',e.target.value)}
-                  className="px-2 py-1.5 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--cream)' }} list={`sug-${city.id}`} />
+                  className="px-2 py-1.5 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} list={`sug-${city.id}`} />
                 <div className="relative">
                   <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'var(--muted)' }}>$</span>
                   <input type="number" placeholder="0" min="0" value={it.cost||''} onChange={e=>updateRow(city.id,i,'cost',e.target.value)}
-                    className="w-full pl-4 pr-2 py-1.5 rounded-lg text-sm font-mono-dm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--cream)' }} />
+                    className="w-full pl-4 pr-2 py-1.5 rounded-lg text-sm font-mono-dm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
                 </div>
                 <input type="text" placeholder="Link o nota..." value={it.link||''} onChange={e=>updateRow(city.id,i,'link',e.target.value)}
-                  className="px-2 py-1.5 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--cream)' }} />
-                <button onClick={()=>removeRow(city.id,i)} className="text-xs px-1.5 py-1 rounded hover:bg-red-50 transition-colors" style={{ color: 'var(--lite)' }}>✕</button>
+                  className="px-2 py-1.5 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
+                <button onClick={()=>removeRow(city.id,i)} className="text-xs px-1.5 py-1 rounded transition-colors" style={{ color: 'var(--lite)' }}>✕</button>
               </div>
             ))}
             <datalist id={`sug-${city.id}`}>{city.suggestions.map(s=><option key={s} value={s}/>)}</datalist>
             <button onClick={()=>addRow(city.id)} className="mt-3 w-full py-1.5 rounded-xl text-xs font-medium transition-all"
-              style={{ border: '1px solid var(--border)', color: 'var(--muted)', background: 'var(--cream)' }}>+ Agregar actividad</button>
+              style={{ border: '1px solid var(--border)', color: 'var(--muted)', background: 'var(--surface2)' }}>+ Agregar actividad</button>
           </div>
         );
       })}
-      <div className="rounded-2xl p-4" style={{ background: '#fff', border: '1px solid var(--border)' }}>
+      <div className="rounded-2xl p-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
         <div className="flex justify-between items-center">
           <span className="font-semibold text-sm">💰 Total excursiones</span>
-          <span className="font-mono-dm text-lg font-semibold" style={{ color: 'var(--navy)' }}>{f$(totalExc)}</span>
+          <span className="font-mono-dm text-lg font-semibold" style={{ color: 'var(--txt)' }}>{f$(totalExc)}</span>
         </div>
       </div>
     </div>
@@ -77,10 +77,10 @@ function ItinerarioTab() {
           days.push(new Date(d));
         }
         return (
-          <div key={city.id} className="rounded-2xl p-4 mb-4" style={{ background: '#fff', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
+          <div key={city.id} className="rounded-2xl p-4 mb-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
             <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
               <span className="font-semibold text-sm">{city.flag} {city.name}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(15,30,53,.08)', color: 'var(--navy)' }}>{days.length} días</span>
+              <span className="tag tag-ink">{days.length} días</span>
             </div>
             {days.map((d, idx) => {
               const key = `${city.id}_${d.toISOString().slice(0,10)}`;
@@ -93,7 +93,7 @@ function ItinerarioTab() {
                   <textarea rows={2} placeholder="¿Qué hacen hoy?" value={state?.itinerario?.[key] || ''}
                     onChange={e => update(key, e.target.value)}
                     className="px-3 py-2 rounded-xl text-sm outline-none resize-none"
-                    style={{ border: '1.5px solid var(--border)', background: 'var(--cream)' }} />
+                    style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
                 </div>
               );
             })}
@@ -101,7 +101,7 @@ function ItinerarioTab() {
         );
       })}
       {!CITIES.some(c => state?.cities?.[c.id]?.checkIn) && (
-        <div className="rounded-2xl p-8 text-center" style={{ background: '#fff', border: '1px solid var(--border)', color: 'var(--muted)' }}>
+        <div className="rounded-2xl p-8 text-center" style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--muted)' }}>
           Cargá las fechas en la sección Ciudades para ver el itinerario.
         </div>
       )}
@@ -119,7 +119,7 @@ export default function Actividades() {
         {[{id:'exc',label:'🗺 Excursiones'},{id:'plan',label:'🗓 Plan día a día'}].map(t=>(
           <button key={t.id} onClick={()=>setTab(t.id)}
             className="px-4 py-2 rounded-full text-xs font-medium transition-all"
-            style={{ background: tab===t.id ? 'var(--navy)' : 'transparent', color: tab===t.id ? '#fff' : 'var(--muted)', border: `1.5px solid ${tab===t.id ? 'var(--navy)' : 'var(--border)'}` }}>
+            style={{ background: tab===t.id ? 'var(--blue)' : 'transparent', color: tab===t.id ? '#fff' : 'var(--muted)', border: `1.5px solid ${tab===t.id ? 'var(--blue)' : 'var(--border)'}` }}>
             {t.label}
           </button>
         ))}

@@ -127,8 +127,8 @@ function AppInner() {
 
   if(isReadOnly) return (
     <div className="min-h-screen" style={{background:'var(--bg,#F4F6F8)'}}>
-      <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14" style={{background:'#fff',borderBottom:'1px solid var(--border,#E2E8F0)'}}>
-        <div className="font-display font-bold text-sm" style={{color:'var(--navy)'}}>✈ Europa 2027</div>
+      <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14" style={{background:'var(--surface)',borderBottom:'1px solid var(--border)'}}>
+        <div className="font-display font-bold text-sm" style={{color:'var(--txt)'}}>✈ Europa 2027</div>
         <div className="text-xs" style={{color:'var(--muted)'}}>Solo lectura</div>
       </div>
       <div className="px-4 lg:px-8 py-6 max-w-4xl mx-auto">
@@ -150,23 +150,26 @@ function AppInner() {
       <div className="hidden lg:block">
         <Sidebar current={current} onNav={nav} total={total} syncStatus={syncStatus} onClose={()=>{}}/>
       </div>
-      <div className="flex-1 lg:ml-56 pb-16 lg:pb-0">
-        <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14" style={{background:'#fff',borderBottom:'1px solid var(--border,#ddd6c8)'}}>
+      <div className="flex-1 lg:ml-56 content-scroll">
+        <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14"
+          style={{background:'var(--surface)',borderBottom:'1px solid var(--border)',boxShadow:'0 1px 0 var(--border)'}}>
           <div className="flex items-center gap-3">
-            <button className="lg:hidden p-2 rounded-lg" style={{border:'1px solid var(--border)'}} onClick={()=>setSidebarOpen(true)}>
+            <button className="lg:hidden flex items-center justify-center rounded-xl transition-colors"
+              style={{width:36,height:36,border:'1.5px solid var(--border)',background:'var(--surface2)'}}
+              onClick={()=>setSidebarOpen(true)}>
               <MenuIcon/>
             </button>
             <div>
-              <div className="font-medium text-sm">{TITLES[current]}</div>
-              <div className="text-xs" style={{color:'var(--muted)'}}>Europa 2027 · Todo en USD</div>
+              <div className="font-semibold text-sm" style={{color:'var(--txt)'}}>{TITLES[current]}</div>
+              <div className="text-xs" style={{color:'var(--txt3)',fontFamily:'DM Mono, monospace',fontSize:10}}>Europa 2027 · USD</div>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-xs" style={{color:'var(--muted)'}}>
-            <span>EUR/USD</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-mono-dm" style={{color:'var(--txt3)'}}>EUR/USD</span>
             <input type="number" step="0.01" min="0.5" max="3" value={eurUsd.toFixed(4)}
               onChange={e=>{const v=parseFloat(e.target.value);if(v>0)setEurUsd(v);}}
-              className="w-16 text-center rounded-lg px-2 py-1 outline-none text-xs font-mono-dm"
-              style={{border:'1.5px solid var(--border)',background:'var(--cream)'}}/>
+              className="font-mono-dm text-center outline-none rounded-lg px-2 py-1 text-xs"
+              style={{border:'1.5px solid var(--border2)',background:'var(--surface2)',color:'var(--txt)',width:72}}/>
           </div>
         </div>
         <div className="px-4 lg:px-8 py-6 max-w-4xl mx-auto">
@@ -184,11 +187,13 @@ function AppInner() {
           </Suspense>
         </div>
       </div>
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 grid grid-cols-5 h-16" style={{background:'#fff',borderTop:'1px solid var(--border)'}}>
+      <div className="bottom-nav fixed bottom-0 left-0 right-0 z-50 grid grid-cols-5"
+        style={{background:'var(--surface)',borderTop:'1px solid var(--border)'}}>
         {BOTTOM_NAV.map(({id,label,Icon})=>(
-          <button key={id} onClick={()=>nav(id)} className="flex flex-col items-center justify-center gap-1 transition-colors"
-            style={{color:current===id?'var(--navy)':'var(--lite,#9aa5b4)'}}>
-            <Icon/><span className="text-xs font-medium">{label}</span>
+          <button key={id} onClick={()=>nav(id)}
+            className="flex flex-col items-center justify-center gap-0.5 transition-colors"
+            style={{height:56,color:current===id?'var(--blue)':'var(--txt3)',background:'none',border:'none',cursor:'pointer'}}>
+            <Icon/><span style={{fontSize:10,fontWeight:current===id?600:400}}>{label}</span>
           </button>
         ))}
       </div>

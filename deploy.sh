@@ -12,7 +12,7 @@ if grep -q '/presupuestoeuropa2027/assets/' index.html; then
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='56' font-size='56'>✈</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-title" content="Europa 2027" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Europa 2027 — Presupuesto</title>

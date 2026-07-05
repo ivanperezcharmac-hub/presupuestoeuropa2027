@@ -15,47 +15,74 @@ const NAV = [
 
 export default function Sidebar({ current, onNav, total, syncStatus, onClose }) {
   const { darkMode } = useApp();
-
-  const dotColor = syncStatus === 'ok' ? '#2d7a4f' : syncStatus === 'saving' ? '#c9a84c' : '#c0392b';
+  const navBg = darkMode ? '#0a0f1a' : '#0b1f3a';
+  const dotColor = syncStatus === 'ok' ? '#4ade80' : syncStatus === 'saving' ? '#fbbf24' : '#f87171';
+  const dotLabel = syncStatus === 'ok' ? 'Sincronizado' : syncStatus === 'saving' ? 'Guardando…' : 'Error';
 
   return (
     <>
-      {/* Overlay mobile */}
-      <div className="fixed inset-0 z-[99] bg-black/40 backdrop-blur-sm lg:hidden" onClick={onClose} />
+      <div className="fixed inset-0 z-[99] lg:hidden"
+        style={{ background: 'rgba(0,0,0,0.52)', backdropFilter: 'blur(4px)' }}
+        onClick={onClose} />
 
       <nav className="fixed top-0 left-0 bottom-0 w-56 z-[100] flex flex-col overflow-y-auto"
-        style={{ background: darkMode ? '#0d1117' : 'var(--navy)' }}>
+        style={{ background: `linear-gradient(180deg, ${navBg} 0%, #050e1a 100%)` }}>
 
-        {/* Brand */}
-        <div className="px-4 py-5 border-b border-white/10">
-          <button onClick={onClose} className="lg:hidden absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10">✕</button>
-          <h2 className="font-display text-sm leading-snug" style={{ color: 'var(--goldl)' }}>✈ Europa<br />2027</h2>
-          <p className="text-xs mt-1 font-mono-dm tracking-wider" style={{ color: 'rgba(255,255,255,.25)' }}>
-            17 MAR → 11 ABR · 5 CIUDADES
-          </p>
+        {/* ── Brand ── */}
+        <div className="px-4 pt-5 pb-5 relative" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <button onClick={onClose}
+            className="lg:hidden absolute top-3 right-3 flex items-center justify-center rounded-full transition-colors"
+            style={{ width: 26, height: 26, color: 'rgba(255,255,255,.4)', background: 'rgba(255,255,255,.08)', border: 'none', cursor: 'pointer', fontSize: 11 }}>
+            ✕
+          </button>
+
+          {/* Avión flotante decorativo */}
+          <div style={{ position: 'absolute', top: 14, right: 40, animation: 'float-y 3s ease-in-out infinite', opacity: 0.35, pointerEvents: 'none' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--goldl)">
+              <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+            </svg>
+          </div>
+
+          <div className="font-display leading-tight mb-0.5" style={{ fontSize: 20, color: 'var(--goldl)' }}>
+            Europa 2027
+          </div>
+          <div className="font-mono-dm" style={{ fontSize: 11, color: 'rgba(255,255,255,.28)', letterSpacing: '0.06em' }}>
+            Agus &amp; Ivan · 26 días
+          </div>
+          <div className="font-mono-dm mt-1" style={{ fontSize: 10, color: 'rgba(255,255,255,.18)', letterSpacing: '0.04em' }}>
+            17 MAR → 11 ABR · 5 ciudades
+          </div>
         </div>
 
-        {/* Nav */}
+        {/* ── Nav ── */}
         <div className="flex-1 px-2 py-3">
-          <div className="text-xs font-semibold tracking-widest uppercase px-2 py-2" style={{ color: 'rgba(255,255,255,.25)' }}>Presupuesto</div>
+          <div className="font-mono-dm text-xs font-semibold uppercase px-2 py-2"
+            style={{ color: 'rgba(255,255,255,.2)', letterSpacing: '0.12em' }}>
+            Presupuesto
+          </div>
           {NAV.slice(0, 6).map(n => (
             <NavItem key={n.id} item={n} active={current === n.id} onClick={() => { onNav(n.id); onClose(); }} />
           ))}
-          <div className="text-xs font-semibold tracking-widest uppercase px-2 pt-4 pb-2" style={{ color: 'rgba(255,255,255,.25)' }}>Herramientas</div>
+          <div className="font-mono-dm text-xs font-semibold uppercase px-2 pt-4 pb-2"
+            style={{ color: 'rgba(255,255,255,.2)', letterSpacing: '0.12em' }}>
+            Herramientas
+          </div>
           {NAV.slice(6).map(n => (
             <NavItem key={n.id} item={n} active={current === n.id} onClick={() => { onNav(n.id); onClose(); }} />
           ))}
         </div>
 
-        {/* Footer */}
-        <div className="px-4 py-4 border-t border-white/10">
-          <div className="text-xs uppercase tracking-widest" style={{ color: 'rgba(255,255,255,.3)' }}>Total estimado</div>
-          <div className="font-display text-2xl mt-1" style={{ color: 'var(--goldl)' }}>{total}</div>
-          <div className="flex items-center gap-1.5 mt-2">
-            <div className="w-1.5 h-1.5 rounded-full transition-colors" style={{ background: dotColor }} />
-            <span className="text-xs" style={{ color: 'rgba(255,255,255,.3)' }}>
-              {syncStatus === 'ok' ? 'Sincronizado ✓' : syncStatus === 'saving' ? 'Guardando…' : 'Error al guardar'}
-            </span>
+        {/* ── Footer ── */}
+        <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="font-mono-dm uppercase mb-1"
+            style={{ fontSize: 10, color: 'rgba(255,255,255,.22)', letterSpacing: '0.12em' }}>
+            Total estimado
+          </div>
+          <div className="font-display mb-2.5" style={{ fontSize: 22, color: 'var(--goldl)' }}>{total}</div>
+          <div className="flex items-center gap-1.5">
+            <div className="rounded-full flex-shrink-0"
+              style={{ width: 6, height: 6, background: dotColor, boxShadow: `0 0 6px ${dotColor}55` }} />
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,.28)' }}>{dotLabel}</span>
           </div>
         </div>
       </nav>
@@ -65,14 +92,19 @@ export default function Sidebar({ current, onNav, total, syncStatus, onClose }) 
 
 function NavItem({ item, active, onClick }) {
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-2 w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium transition-all mb-0.5"
+    <button onClick={onClick}
+      className="flex items-center gap-2.5 w-full text-left rounded-lg transition-all mb-px"
       style={{
-        background: active ? 'rgba(201,168,76,.2)' : 'transparent',
-        color: active ? 'var(--goldl)' : 'rgba(255,255,255,.55)',
+        padding: '8px 10px 8px 10px',
+        background: active ? 'rgba(201,147,58,0.13)' : 'transparent',
+        color: active ? 'var(--goldl)' : 'rgba(255,255,255,.5)',
+        border: 'none',
+        cursor: 'pointer',
+        fontSize: 12,
+        fontWeight: active ? 500 : 400,
+        borderLeft: active ? '2px solid rgba(201,147,58,0.65)' : '2px solid transparent',
       }}>
-      <span className="w-4 text-center">{item.ic}</span>
+      <span style={{ width: 16, textAlign: 'center', flexShrink: 0, fontSize: 13 }}>{item.ic}</span>
       {item.label}
     </button>
   );

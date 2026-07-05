@@ -11,7 +11,7 @@ export default function Estilo() {
     <div>
       <h1 className="font-display text-2xl font-bold mb-1">Personalizar</h1>
       <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>Cambiá colores y tema. Los cambios aplican al instante.</p>
-      <div className="rounded-2xl p-5 mb-4" style={{ background: '#fff', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
+      <div className="rounded-2xl p-5 mb-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
         <div className="font-semibold text-sm mb-4">🎨 Colores</div>
         <div className="grid sm:grid-cols-2 gap-6">
           {[
@@ -33,7 +33,7 @@ export default function Estilo() {
           ))}
         </div>
       </div>
-      <div className="rounded-2xl p-5" style={{ background: '#fff', border: '1px solid var(--border)' }}>
+      <div className="rounded-2xl p-5" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
         <div className="font-semibold text-sm mb-3">🌙 Tema</div>
         <button onClick={toggleDark}
           className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"

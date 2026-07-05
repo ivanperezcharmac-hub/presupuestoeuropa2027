@@ -9,7 +9,7 @@ export default function Costos() {
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {COSTS_DATA.map(d => (
-          <div key={d.city} className="rounded-2xl overflow-hidden" style={{ background: '#fff', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
+          <div key={d.city} className="rounded-2xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
             <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
               <span className="text-xl">{d.flag}</span>
               <div>

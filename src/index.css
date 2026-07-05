@@ -1,19 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:wght@400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@theme {
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+}
+
+@layer utilities {
+  .font-display { font-family: 'DM Serif Display', Georgia, serif; }
+  .font-mono-dm { font-family: 'DM Mono', monospace; }
+}
 
 :root {
-  --navy: #0f1e35;
-  --gold: #c9a84c;
-  --goldl: #e8c97e;
-  --cream: #f5f0e8;
+  --navy: #0b1f3a;
+  --blue: #1b4fd8;
+  --gold: #c9933a;
+  --goldl: #e8b86d;
+  --grn: #166534;
+  --grn-bg: #dcfce7;
+  --red: #991b1b;
+  --red-bg: #fee2e2;
+  --amber: #92400e;
+  --amber-bg: #fef3c7;
+  --bg: #f4f6f8;
+  --surface: #fff;
+  --surface2: #f0f3f7;
+  --border: #e2e8f0;
+  --border2: #cbd5e1;
+  --txt: #0b1f3a;
+  --txt2: #475569;
+  --txt3: #94a3b8;
+  --muted: #94a3b8;
+  --r: 16px;
+  --rs: 10px;
+  --sh: 0 2px 8px rgba(11,31,58,0.06), 0 1px 2px rgba(11,31,58,0.04);
+  --sh-lg: 0 8px 32px rgba(11,31,58,0.1), 0 2px 8px rgba(11,31,58,0.06);
+  /* backward compat aliases */
+  --cream: #f0f3f7;
+  --cream2: #e2e8f0;
+  --lite: #94a3b8;
 }
+
+body.dark {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #21262d;
+  --border: #30363d;
+  --border2: #484f58;
+  --txt: #e6edf3;
+  --txt2: #8b949e;
+  --txt3: #484f58;
+  --muted: #8b949e;
+  --sh: 0 2px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --sh-lg: 0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  --grn-bg: #1a3a24;
+  --red-bg: #3a1a1a;
+  --amber-bg: #3a2a0a;
+  --cream: #21262d;
+  --cream2: #30363d;
+  --grn: #4ade80;
+  --red: #f87171;
+  --amber: #fbbf24;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--cream);
-  color: var(--navy);
+  background: var(--bg);
+  color: var(--txt);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
-.font-display { font-family: 'Playfair Display', serif; }
-.font-mono-dm { font-family: 'DM Mono', monospace; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  transition: box-shadow .2s, transform .2s;
+}
+.card-lift:hover {
+  box-shadow: var(--sh-lg);
+  transform: translateY(-1px);
+}
+
+.inp {
+  border: 1.5px solid var(--border2);
+  border-radius: var(--rs);
+  background: var(--surface2);
+  width: 100%;
+  color: var(--txt);
+  appearance: none;
+  outline: none;
+  min-height: 40px;
+  padding: 9px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  transition: border-color .15s, background .15s;
+}
+.inp:focus { border-color: var(--blue); background: var(--surface); }
+.inp-mono { font-family: 'DM Mono', monospace; }
+
+body.dark input[type=date] { color-scheme: dark; }
+
+select.inp {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  padding-right: 32px;
+}
+
+.tag {
+  letter-spacing: .02em;
+  white-space: nowrap;
+  border-radius: 99px;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+}
+.tag-green { background: var(--grn-bg); color: var(--grn); }
+.tag-amber { background: var(--amber-bg); color: var(--amber); }
+.tag-red { background: var(--red-bg); color: var(--red); }
+.tag-blue { color: var(--blue); background: rgba(29,78,216,0.08); }
+.tag-ink { background: var(--surface2); color: var(--txt2); }
+
+.progress-track { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
+.progress-fill { border-radius: 99px; height: 100%; transition: width .5s cubic-bezier(.4,0,.2,1); }
+
+.nav-item {
+  cursor: pointer;
+  text-align: left;
+  color: rgba(255,255,255,0.5);
+  background: none;
+  border: none;
+  border-radius: 10px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 1px;
+  padding: 9px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  transition: background .12s, color .12s;
+  display: flex;
+}
+.nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.07); }
+.nav-item.active { color: #fff; background: rgba(27,79,216,0.3); font-weight: 500; }
+
+.fade-in { animation: .2s both fadeIn; }
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rotateCoin { to { transform: rotate(360deg); } }
+.coin-ring { animation: 20s linear infinite rotateCoin; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: none; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+@keyframes plane-slide {
+  0%   { left: -28px; opacity: 0; }
+  4%   { opacity: 0.85; }
+  96%  { opacity: 0.85; }
+  100% { left: calc(100% + 8px); opacity: 0; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* Safe area insets para iPhone */
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+.content-scroll {
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 16px);
+}
+@media (min-width: 1024px) {
+  .bottom-nav { display: none; }
+  .content-scroll { padding-bottom: 0; }
+}
+
+.tip-box {
+  border-radius: var(--rs);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--txt2);
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.tip-box strong { color: var(--txt); }

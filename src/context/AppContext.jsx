@@ -1,11 +1,18 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { SCRIPT_URL, CITIES, COMPRAS_CATS } from '../data/constants';
+import { SCRIPT_URL, CITIES, COMPRAS_CATS, INTL_FLIGHTS, EURO_FLIGHTS } from '../data/constants';
 
 const AppContext = createContext(null);
 
 function initState(raw = {}) {
   const s = { ...raw };
   if (!s.prices || typeof s.prices !== 'object') s.prices = {};
+  if (!s.flightDates || typeof s.flightDates !== 'object') s.flightDates = {};
+  if (!s.flightLinks || typeof s.flightLinks !== 'object') s.flightLinks = {};
+  if (!s.flightDepTimes || typeof s.flightDepTimes !== 'object') s.flightDepTimes = {};
+  if (!s.flightNumbers || typeof s.flightNumbers !== 'object') s.flightNumbers = {};
+  if (!s.flightHasStop || typeof s.flightHasStop !== 'object') s.flightHasStop = {};
+  if (!s.flightStops || typeof s.flightStops !== 'object') s.flightStops = {};
+  if (!s.flightFinalArrival || typeof s.flightFinalArrival !== 'object') s.flightFinalArrival = {};
   if (!s.cities || typeof s.cities !== 'object') s.cities = {};
   if (!s.accom || typeof s.accom !== 'object') s.accom = {};
   if (!s.extras || typeof s.extras !== 'object') s.extras = {};
@@ -82,13 +89,12 @@ async function saveToCloud(state) {
 export function AppProvider({ children }) {
   const [state, setStateRaw] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [syncStatus, setSyncStatus] = useState('loading'); // loading | saving | ok | error
+  const [syncStatus, setSyncStatus] = useState('loading');
   const [eurUsd, setEurUsd] = useState(1.165);
   const [eurUsdUpdatedAt, setEurUsdUpdatedAt] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const saveTimer = useRef(null);
 
-  // Load on mount
   useEffect(() => {
     loadFromCloud().then(raw => {
       const s = initState(raw || {});
@@ -99,7 +105,6 @@ export function AppProvider({ children }) {
     });
   }, []);
 
-  // Fetch EUR/USD
   useEffect(() => {
     const apis = [
       () => fetch('https://api.frankfurter.app/latest?from=EUR&to=USD').then(r => r.json()).then(d => d?.rates?.USD),
@@ -116,7 +121,6 @@ export function AppProvider({ children }) {
     })();
   }, []);
 
-  // Dark mode
   useEffect(() => {
     document.body.classList.toggle('dark', darkMode);
   }, [darkMode]);
@@ -152,10 +156,55 @@ export function useApp() {
   return useContext(AppContext);
 }
 
-export function cityDays(cities, id) {
-  const c = cities?.[id];
-  if (!c?.checkIn || !c?.checkOut) return 0;
-  return Math.max(0, Math.round((new Date(c.checkOut) - new Date(c.checkIn)) / 864e5));
+// Cuántos días cruza un vuelo nocturno (0 = llega el mismo día)
+export function arrivalDayOffset(flight, depTime) {
+  if (!flight.durationMin) return 0;
+  const [h, m] = (depTime || '22:00').split(':').map(Number);
+  if (isNaN(h) || isNaN(m)) return 0;
+  const tzDiff = ((flight.tzTo ?? 0) - (flight.tzFrom ?? 0)) * 60;
+  const arrMins = h * 60 + m + flight.durationMin + tzDiff;
+  return Math.floor(arrMins / 1440);
+}
+
+// Fecha de checkIn/checkOut derivada de los vuelos
+export function getCityDates(state, cityId) {
+  const flightDates = state?.flightDates || {};
+  const flightDepTimes = state?.flightDepTimes || {};
+  let checkIn = null, checkOut = null;
+  [...INTL_FLIGHTS, ...EURO_FLIGHTS].forEach(flight => {
+    const dateISO = flightDates[flight.id] || flight.defDate;
+    if (flight.arrivesCity === cityId) {
+      const offset = arrivalDayOffset(flight, flightDepTimes[flight.id]);
+      if (offset > 0) {
+        const d = new Date(dateISO + 'T00:00:00');
+        d.setDate(d.getDate() + offset);
+        checkIn = d.toISOString().slice(0, 10);
+      } else {
+        checkIn = dateISO;
+      }
+    }
+    if (flight.departsCity === cityId) {
+      checkOut = dateISO;
+    }
+  });
+  return { checkIn, checkOut };
+}
+
+// Acepta state completo o solo state.cities (backward compat)
+export function cityDays(stateOrCities, id) {
+  const cities = stateOrCities?.cities ?? stateOrCities;
+  const hasFlightDates = stateOrCities?.flightDates !== undefined;
+  let checkIn, checkOut;
+  if (hasFlightDates) {
+    const dates = getCityDates(stateOrCities, id);
+    checkIn = dates.checkIn || cities?.[id]?.checkIn;
+    checkOut = dates.checkOut || cities?.[id]?.checkOut;
+  } else {
+    checkIn = cities?.[id]?.checkIn;
+    checkOut = cities?.[id]?.checkOut;
+  }
+  if (!checkIn || !checkOut) return 0;
+  return Math.max(0, Math.round((new Date(checkOut) - new Date(checkIn)) / 864e5));
 }
 
 export function f$(n) {
