@@ -25,8 +25,14 @@ function daysUntilTrip() {
 export default function Sidebar({ current, onNav, total, syncStatus, onClose }) {
   const { darkMode } = useApp();
   const navBg = darkMode ? '#0a0f1a' : '#0b1f3a';
-  const dotColor = syncStatus === 'ok' ? '#4ade80' : syncStatus === 'saving' ? '#fbbf24' : '#f87171';
-  const dotLabel = syncStatus === 'ok' ? 'Sincronizado' : syncStatus === 'saving' ? 'Guardando…' : 'Error';
+  const dotColor = syncStatus === 'ok' ? '#4ade80'
+    : syncStatus === 'saving' ? '#fbbf24'
+    : syncStatus === 'offline' ? '#9ca3af'
+    : '#f87171';
+  const dotLabel = syncStatus === 'ok' ? 'Sincronizado'
+    : syncStatus === 'saving' ? 'Guardando…'
+    : syncStatus === 'offline' ? 'Sin conexión (guardado local)'
+    : 'Error';
   const daysLeft = daysUntilTrip();
   const countdownLabel = daysLeft > 0 ? `⏳ Faltan ${daysLeft} días`
     : daysLeft === 0 ? '✈ ¡Hoy es el día!'
