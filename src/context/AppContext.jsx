@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { SCRIPT_URL, CITIES, COMPRAS_CATS, INTL_FLIGHTS, EURO_FLIGHTS } from '../data/constants';
+import { STATE_CACHE_KEY, RATE_CACHE_KEY, PENDING_SYNC_KEY, readCache, writeCache, clearCache } from './offlineCache';
 
 const AppContext = createContext(null);
 
@@ -97,11 +98,18 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     loadFromCloud().then(raw => {
-      const s = initState(raw || {});
+      let offline = false;
+      let source = raw;
+      if (!source) {
+        source = readCache(STATE_CACHE_KEY);
+        offline = true;
+      }
+      const s = initState(source || {});
       setStateRaw(s);
       if (s.theme?.dark) setDarkMode(true);
       setLoading(false);
-      setSyncStatus('ok');
+      writeCache(STATE_CACHE_KEY, s);
+      setSyncStatus(offline ? 'offline' : 'ok');
     });
   }, []);
 
@@ -115,8 +123,19 @@ export function AppProvider({ children }) {
       for (const api of apis) {
         try {
           const rate = await api();
-          if (rate && rate > 0.5 && rate < 3) { setEurUsd(rate); setEurUsdUpdatedAt(new Date()); return; }
+          if (rate && rate > 0.5 && rate < 3) {
+            setEurUsd(rate);
+            const now = new Date();
+            setEurUsdUpdatedAt(now);
+            writeCache(RATE_CACHE_KEY, { rate, updatedAt: now.toISOString() });
+            return;
+          }
         } catch { continue; }
+      }
+      const cached = readCache(RATE_CACHE_KEY);
+      if (cached?.rate) {
+        setEurUsd(cached.rate);
+        setEurUsdUpdatedAt(new Date(cached.updatedAt));
       }
     })();
   }, []);
@@ -125,13 +144,37 @@ export function AppProvider({ children }) {
     document.body.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
+  useEffect(() => {
+    function flushPendingSync() {
+      if (readCache(PENDING_SYNC_KEY) !== '1') return;
+      setStateRaw(prev => {
+        if (!prev) return prev;
+        setSyncStatus('saving');
+        saveToCloud(prev)
+          .then(() => { clearCache(PENDING_SYNC_KEY); setSyncStatus('ok'); })
+          .catch(() => setSyncStatus('error'));
+        return prev;
+      });
+    }
+    window.addEventListener('online', flushPendingSync);
+    return () => window.removeEventListener('online', flushPendingSync);
+  }, []);
+
   const setState = useCallback((updater) => {
     setStateRaw(prev => {
       const next = typeof updater === 'function' ? updater(prev) : updater;
+      writeCache(STATE_CACHE_KEY, next);
+      if (!navigator.onLine) {
+        writeCache(PENDING_SYNC_KEY, '1');
+        setSyncStatus('offline');
+        return next;
+      }
       setSyncStatus('saving');
       clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => {
-        saveToCloud(next).then(() => setSyncStatus('ok')).catch(() => setSyncStatus('error'));
+        saveToCloud(next)
+          .then(() => { clearCache(PENDING_SYNC_KEY); setSyncStatus('ok'); })
+          .catch(() => setSyncStatus('error'));
       }, 1200);
       return next;
     });
