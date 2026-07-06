@@ -162,7 +162,7 @@ function AppInner() {
             <div>
               <div className="font-semibold text-sm" style={{color:'var(--txt)'}}>{TITLES[current]}</div>
               <div className="text-xs" style={{color:'var(--txt3)',fontFamily:'DM Mono, monospace',fontSize:10}}>
-                {current==='resumen' ? '17 MAR → 11 ABR · 5 ciudades' : 'Europa 2027 · USD'}
+                {current==='resumen' ? '17 MAR → 11 ABR · BCN · ROM · PAR · LON · MAD' : 'Europa 2027 · USD'}
               </div>
             </div>
           </div>
