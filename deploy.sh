@@ -30,7 +30,17 @@ npm run build
 cp dist/index.html index.html
 cp dist/assets/* assets/
 
+shopt -s nullglob
+pwa_files=(dist/manifest.webmanifest dist/sw.js dist/registerSW.js dist/workbox-*.js)
+for f in "${pwa_files[@]}"; do
+  cp "$f" "$(basename "$f")"
+done
+shopt -u nullglob
+
 git add index.html assets/
+for f in "${pwa_files[@]}"; do
+  git add "$(basename "$f")"
+done
 git commit -m "${1:-deploy}"
 git push origin main
 
