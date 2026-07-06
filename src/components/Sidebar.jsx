@@ -13,11 +13,24 @@ const NAV = [
   { id: 'estilo',       ic: '🎨', label: 'Personalizar' },
 ];
 
+const TRIP_START = '2027-03-17';
+
+function daysUntilTrip() {
+  const start = new Date(TRIP_START + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.ceil((start - today) / 86400000);
+}
+
 export default function Sidebar({ current, onNav, total, syncStatus, onClose }) {
   const { darkMode } = useApp();
   const navBg = darkMode ? '#0a0f1a' : '#0b1f3a';
   const dotColor = syncStatus === 'ok' ? '#4ade80' : syncStatus === 'saving' ? '#fbbf24' : '#f87171';
   const dotLabel = syncStatus === 'ok' ? 'Sincronizado' : syncStatus === 'saving' ? 'Guardando…' : 'Error';
+  const daysLeft = daysUntilTrip();
+  const countdownLabel = daysLeft > 0 ? `⏳ Faltan ${daysLeft} días`
+    : daysLeft === 0 ? '✈ ¡Hoy es el día!'
+    : '✈ ¡Buen viaje!';
 
   return (
     <>
@@ -46,11 +59,11 @@ export default function Sidebar({ current, onNav, total, syncStatus, onClose }) 
           <div className="font-display leading-tight mb-0.5" style={{ fontSize: 20, color: 'var(--goldl)' }}>
             Europa 2027
           </div>
-          <div className="font-mono-dm" style={{ fontSize: 11, color: 'rgba(255,255,255,.28)', letterSpacing: '0.06em' }}>
+          <div className="font-mono-dm" style={{ fontSize: 11, color: 'rgba(255,255,255,.85)', letterSpacing: '0.06em' }}>
             Agus &amp; Ivan · 26 días
           </div>
-          <div className="font-mono-dm mt-1" style={{ fontSize: 10, color: 'rgba(255,255,255,.18)', letterSpacing: '0.04em' }}>
-            17 MAR → 11 ABR · 5 ciudades
+          <div className="font-mono-dm mt-1" style={{ fontSize: 10, color: 'rgba(255,255,255,.6)', letterSpacing: '0.04em' }}>
+            {countdownLabel}
           </div>
         </div>
 
