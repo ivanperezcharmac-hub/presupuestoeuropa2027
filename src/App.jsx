@@ -45,17 +45,21 @@ function AppInner() {
 
   useEffect(() => {
     function onTouchStart(e) {
-      touchStartX.current = e.touches[0].clientX;
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') { touchStartX.current = null; return; }
+      touchStartX.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     }
     function onTouchEnd(e) {
       if (touchStartX.current === null) return;
-      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      const dx = e.changedTouches[0].clientX - touchStartX.current.x;
+      const dy = e.changedTouches[0].clientY - touchStartX.current.y;
       touchStartX.current = null;
-      if (Math.abs(dx) < 60) return; // threshold mínimo
-      if (sidebarOpen) return;       // no swipear con sidebar abierto
+      if (Math.abs(dx) < 80) return;            // threshold más alto
+      if (Math.abs(dx) < Math.abs(dy) * 2) return; // debe ser claramente horizontal
+      if (sidebarOpen) return;
       const idx = SECTIONS.indexOf(current);
-      if (dx < 0 && idx < SECTIONS.length - 1) setCurrent(SECTIONS[idx + 1]); // swipe izquierda → siguiente
-      if (dx > 0 && idx > 0) setCurrent(SECTIONS[idx - 1]);                   // swipe derecha → anterior
+      if (dx < 0 && idx < SECTIONS.length - 1) setCurrent(SECTIONS[idx + 1]);
+      if (dx > 0 && idx > 0) setCurrent(SECTIONS[idx - 1]);
     }
     document.addEventListener('touchstart', onTouchStart, { passive: true });
     document.addEventListener('touchend', onTouchEnd, { passive: true });
