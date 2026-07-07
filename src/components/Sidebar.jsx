@@ -45,7 +45,7 @@ export default function Sidebar({ current, onNav, total, syncStatus, onClose }) 
         onClick={onClose} />
 
       <nav className="fixed top-0 left-0 bottom-0 w-56 z-[100] flex flex-col overflow-y-auto"
-        style={{ background: `linear-gradient(180deg, ${navBg} 0%, #050e1a 100%)` }}>
+        style={{ background: `linear-gradient(180deg, ${navBg} 0%, #050e1a 100%)`, paddingTop: 'env(safe-area-inset-top, 0px)' }}>
 
         {/* ── Brand ── */}
         <div className="px-4 pt-5 pb-5 relative" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>

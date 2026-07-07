@@ -215,3 +215,9 @@ select.inp {
 }
 /* Tap sin highlight gris feo en iOS */
 * { -webkit-tap-highlight-color: transparent; }
+
+/* ── SAFE AREA TOP (notch iPhone en modo standalone/PWA) ── */
+.topbar-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(56px + env(safe-area-inset-top, 0px)) !important;
+}

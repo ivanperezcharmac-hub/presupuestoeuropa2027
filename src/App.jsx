@@ -131,7 +131,7 @@ function AppInner() {
 
   if(isReadOnly) return (
     <div className="min-h-screen" style={{background:'var(--bg,#F4F6F8)'}}>
-      <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14" style={{background:'var(--surface)',borderBottom:'1px solid var(--border)'}}>
+      <div className="topbar-safe sticky top-0 z-50 flex items-center justify-between px-4 h-14" style={{background:'var(--surface)',borderBottom:'1px solid var(--border)'}}>
         <div className="font-display font-bold text-sm" style={{color:'var(--txt)'}}>✈ Europa 2027</div>
         <div className="text-xs" style={{color:'var(--muted)'}}>Solo lectura</div>
       </div>
@@ -155,7 +155,7 @@ function AppInner() {
         <Sidebar current={current} onNav={nav} total={total} syncStatus={syncStatus} onClose={()=>{}}/>
       </div>
       <div className="flex-1 lg:ml-56 content-scroll">
-        <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14"
+        <div className="topbar-safe sticky top-0 z-50 flex items-center justify-between px-4 h-14"
           style={{background:'var(--surface)',borderBottom:'1px solid var(--border)',boxShadow:'0 1px 0 var(--border)'}}>
           <div className="flex items-center gap-3">
             <button className="lg:hidden flex items-center justify-center rounded-xl transition-colors"
