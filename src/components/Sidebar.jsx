@@ -10,6 +10,8 @@ const NAV = [
   { id: 'alertas',      ic: '🔔', label: 'Alertas EUR/USD' },
   { id: 'checklist',    ic: '✅', label: 'Checklist' },
   { id: 'costos',       ic: '💶', label: 'Costos por ciudad' },
+  { id: 'talles',       ic: '👕', label: 'Conversor de talles' },
+  { id: 'emergencias',  ic: '🆘', label: 'Emergencias' },
   { id: 'estilo',       ic: '🎨', label: 'Personalizar' },
 ];
 

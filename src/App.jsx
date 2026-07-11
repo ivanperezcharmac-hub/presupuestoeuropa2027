@@ -15,12 +15,15 @@ const Alertas = lazy(() => import('./components/Alertas'));
 const Checklist = lazy(() => import('./components/Checklist'));
 const Costos = lazy(() => import('./components/Costos'));
 const Estilo = lazy(() => import('./components/Estilo'));
+const Talles = lazy(() => import('./components/Talles'));
+const Emergencias = lazy(() => import('./components/Emergencias'));
 
 const TITLES = {
   resumen:'Resumen del viaje',vuelos:'Vuelos',ciudades:'Ciudades y fechas',
   alojamientos:'Alojamientos',actividades:'Excursiones & Plan',
   compras:'Compras del viaje',alertas:'Alertas EUR/USD',
   checklist:'Checklist pre-viaje',costos:'Costos de referencia',estilo:'Personalizar',
+  talles:'Conversor de talles',emergencias:'Emergencias',
 };
 
 const BOTTOM_NAV = [
@@ -31,7 +34,7 @@ const BOTTOM_NAV = [
   {id:'sidebar',label:'Más',Icon:MenuIcon},
 ];
 
-const SECTIONS = ['resumen','vuelos','ciudades','alojamientos','actividades','compras','alertas','checklist','costos','estilo'];
+const SECTIONS = ['resumen','vuelos','ciudades','alojamientos','actividades','compras','alertas','checklist','costos','talles','emergencias','estilo'];
 
 function AppInner() {
   const {state,loading,syncStatus,eurUsd,setEurUsd} = useApp();
@@ -190,6 +193,8 @@ function AppInner() {
             {current==='checklist'    && <Checklist/>}
             {current==='costos'       && <Costos/>}
             {current==='estilo'       && <Estilo/>}
+            {current==='talles'       && <Talles/>}
+            {current==='emergencias'  && <Emergencias/>}
           </Suspense>
         </div>
       </div>

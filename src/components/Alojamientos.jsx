@@ -4,7 +4,7 @@ import { CITIES } from '../data/constants';
 
 const TIPOS = ['','Airbnb','Hotel','Hostel','Apartamento','B&B','Otro'];
 
-function empty() { return { name:'',type:'',price:'',link:'',zona:'',notes:'' }; }
+function empty() { return { name:'',type:'',price:'',link:'',zona:'',notes:'',tel:'',dir:'' }; }
 
 export default function Alojamientos() {
   const { state, setState } = useApp();
@@ -99,6 +99,16 @@ export default function Alojamientos() {
                       <input type="url" placeholder="https://..." value={o.link} onChange={e => updateOpt(city.id, i, 'link', e.target.value)}
                         className="w-full px-3 py-1.5 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
                     </div>
+                    <div>
+                      <label className="text-xs font-semibold uppercase tracking-wider block mb-1" style={{ color: 'var(--muted)' }}>Teléfono</label>
+                      <input type="tel" placeholder="+34 600 000 000" value={o.tel || ''} onChange={e => updateOpt(city.id, i, 'tel', e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-lg text-sm font-mono-dm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold uppercase tracking-wider block mb-1" style={{ color: 'var(--muted)' }}>Dirección</label>
+                      <input type="text" placeholder="Calle y número" value={o.dir || ''} onChange={e => updateOpt(city.id, i, 'dir', e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
+                    </div>
                   </div>
                   <div className="flex items-center gap-3 flex-wrap">
                     <button onClick={() => choose(city.id, i)}
@@ -108,6 +118,20 @@ export default function Alojamientos() {
                     </button>
                     {price > 0 && <span className="font-mono-dm text-sm" style={{ color: 'var(--txt)' }}>{f$(price * days)} total ({days}n × ${price})</span>}
                     {o.link && <a href={o.link} target="_blank" rel="noreferrer" className="text-xs" style={{ color: 'var(--blue)' }}>Abrir link ↗</a>}
+                    {o.tel && (
+                      <>
+                        <a href={`tel:${o.tel.replace(/\s/g, '')}`} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                          style={{ background: 'var(--grn-bg)', color: 'var(--grn)', textDecoration: 'none' }}>📞 Llamar</a>
+                        <a href={`https://wa.me/${o.tel.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                          style={{ background: '#DCF8C6', color: '#075E54', textDecoration: 'none' }}>💬 WhatsApp</a>
+                      </>
+                    )}
+                    {o.dir && (
+                      <a href={`https://maps.google.com/?q=${encodeURIComponent(o.dir + ', ' + city.name)}`} target="_blank" rel="noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                        style={{ background: 'var(--surface2)', color: 'var(--txt2)', textDecoration: 'none', border: '1px solid var(--border2)' }}>📍 Mapa</a>
+                    )}
                   </div>
                 </div>
               );
