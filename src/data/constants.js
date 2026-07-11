@@ -75,7 +75,7 @@ export const EXCURSION_CITIES = [
 ];
 
 export const CHECKLIST_GROUPS = [
-  { cat: "📄 Documentación", items: ["Pasaportes vigentes (+6 meses)", "Fotocopias de pasaportes", "Visas (UK necesita ETA)", "Seguro de viaje contratado"] },
+  { cat: "📄 Documentación", items: ["Pasaportes vigentes (+6 meses)", "Fotocopias de pasaportes", "ETIAS de Agus tramitado (€20, abre fines 2026)", "UK ETA de Agus tramitado (£20)", "UK ETA de Ivan tramitado (£20)", "Seguro de viaje contratado"] },
   { cat: "✈️ Vuelos", items: ["Vuelo BUE→BCN confirmado", "Vuelos internos reservados", "Check-in online hecho", "Apps de aerolíneas descargadas"] },
   { cat: "🛏 Alojamientos", items: ["Barcelona confirmado", "Roma confirmado", "París confirmado", "Londres confirmado", "Madrid confirmado"] },
   { cat: "💳 Finanzas", items: ["Tarjetas avisadas al banco", "Efectivo EUR para primeros días", "Wise o similar cargado", "Límites de tarjeta revisados"] },
