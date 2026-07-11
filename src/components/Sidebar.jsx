@@ -12,6 +12,7 @@ const NAV = [
   { id: 'costos',       ic: '💶', label: 'Costos por ciudad' },
   { id: 'talles',       ic: '👕', label: 'Conversor de talles' },
   { id: 'emergencias',  ic: '🆘', label: 'Emergencias' },
+  { id: 'permisos',     ic: '🛂', label: 'Permisos ETIAS/ETA' },
   { id: 'estilo',       ic: '🎨', label: 'Personalizar' },
 ];
 
