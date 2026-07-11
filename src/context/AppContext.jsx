@@ -93,6 +93,7 @@ export function AppProvider({ children }) {
   const [syncStatus, setSyncStatus] = useState('loading');
   const [eurUsd, setEurUsd] = useState(1.165);
   const [eurUsdUpdatedAt, setEurUsdUpdatedAt] = useState(null);
+  const [gbpUsd, setGbpUsd] = useState(1.34);
   const [darkMode, setDarkMode] = useState(false);
   const saveTimer = useRef(null);
 
@@ -137,6 +138,26 @@ export function AppProvider({ children }) {
         setEurUsd(cached.rate);
         setEurUsdUpdatedAt(new Date(cached.updatedAt));
       }
+    })();
+    // GBP/USD — mismas 3 APIs en cascada
+    const gbpApis = [
+      () => fetch('https://api.frankfurter.app/latest?from=GBP&to=USD').then(r => r.json()).then(d => d?.rates?.USD),
+      () => fetch('https://open.er-api.com/v6/latest/GBP').then(r => r.json()).then(d => d?.rates?.USD),
+      () => fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/gbp.json').then(r => r.json()).then(d => d?.gbp?.usd),
+    ];
+    (async () => {
+      for (const api of gbpApis) {
+        try {
+          const rate = await api();
+          if (rate && rate > 0.8 && rate < 3) {
+            setGbpUsd(rate);
+            writeCache('europa2027_gbp_rate', { rate, updatedAt: new Date().toISOString() });
+            return;
+          }
+        } catch { continue; }
+      }
+      const cachedGbp = readCache('europa2027_gbp_rate');
+      if (cachedGbp?.rate) setGbpUsd(cachedGbp.rate);
     })();
   }, []);
 
@@ -189,7 +210,7 @@ export function AppProvider({ children }) {
   }, [setState]);
 
   return (
-    <AppContext.Provider value={{ state, setState, loading, syncStatus, eurUsd, setEurUsd, eurUsdUpdatedAt, darkMode, toggleDark }}>
+    <AppContext.Provider value={{ state, setState, loading, syncStatus, eurUsd, setEurUsd, eurUsdUpdatedAt, gbpUsd, darkMode, toggleDark }}>
       {children}
     </AppContext.Provider>
   );
