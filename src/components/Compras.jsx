@@ -23,15 +23,16 @@ function CompraItem({ catId, persona, idx, item, rate }) {
     <div className="py-2 border-b last:border-0" style={{ borderColor: 'var(--border)' }}>
       <input type="text" placeholder="Artículo..." value={item.name || ''} onChange={e => update('name', e.target.value)}
         className="w-full px-2 py-1 rounded-lg text-sm mb-1.5 outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
-      <div className="flex gap-2">
-        <div className="relative flex-1">
+      <div className="flex gap-2 items-center">
+        <div className="relative flex-1 min-w-0">
           <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-mono-dm" style={{ color: 'var(--muted)' }}>€</span>
           <input type="number" placeholder="0" min="0" value={item.cost || ''} onChange={e => update('cost', e.target.value)}
-            className="w-full pl-5 pr-2 py-1 rounded-lg text-sm font-mono-dm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
+            className="w-full pl-5 pr-2 py-1.5 rounded-lg text-sm font-mono-dm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
         </div>
         <input type="text" placeholder="Ciudad..." value={item.nota || ''} onChange={e => update('nota', e.target.value)}
-          className="flex-1 px-2 py-1 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
-        <button onClick={remove} className="text-xs px-2 rounded-lg transition-colors" style={{ color: 'var(--lite)' }}>✕</button>
+          className="flex-1 min-w-0 px-2 py-1.5 rounded-lg text-sm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
+        <button onClick={remove} className="flex-shrink-0 flex items-center justify-center rounded-lg transition-colors"
+          style={{ color: 'var(--lite)', width: 36, height: 36, minWidth: 36, minHeight: 36, background: 'var(--surface2)', border: 'none' }}>✕</button>
       </div>
       {costUsd > 0 && <div className="text-xs mt-1 font-mono-dm" style={{ color: 'var(--muted)' }}>≈ {f$(costUsd)} USD</div>}
     </div>
@@ -95,9 +96,10 @@ export default function Compras() {
               </div>
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <PersonaCol cat={cat} persona="agus" label="👩 Agus" rate={eurUsd} />
-            <div className="w-px" style={{ background: 'var(--border)' }} />
+            <div className="hidden sm:block w-px" style={{ background: 'var(--border)' }} />
+            <div className="sm:hidden h-px" style={{ background: 'var(--border)' }} />
             <PersonaCol cat={cat} persona="ivan" label="👨 Ivan" rate={eurUsd} />
           </div>
         </div>
