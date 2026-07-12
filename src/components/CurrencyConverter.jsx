@@ -165,7 +165,7 @@ export default function CurrencyConverter() {
             </div>
 
             <div className="text-center font-mono-dm" style={{ fontSize: 10, color: 'var(--txt3)' }}>
-              {eurUsdUpdatedAt ? `Live · ${timeAgo(eurUsdUpdatedAt)}` : 'Tasa de referencia'} · ARS: BNA oficial compra
+              {eurUsdUpdatedAt ? `Live · ${timeAgo(eurUsdUpdatedAt)}` : 'Tasa de referencia'} · ARS: BNA oficial venta
             </div>
           </div>
         </div>
