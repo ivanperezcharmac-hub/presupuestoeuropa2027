@@ -29,7 +29,7 @@ function emptyStop() {
 }
 
 function FlightRow({
-  flight, price, dateISO, savedLink, depTime, flightNum, hasStop, stops, finalArrTime,
+  flight, price, dateISO, savedLink, depTime, flightNum, airline, hasStop, stops, finalArrTime,
   onPrice, onDate, onLink, onDepTime, onFlightNum, onToggleStop, onStopChange, onAddStop, onRemoveStop, onFinalArrTime,
 }) {
   const priceOk = parseFloat(price) > 0;
@@ -53,7 +53,7 @@ function FlightRow({
         </a>
       </div>
 
-      {/* Date + Flight number */}
+      {/* Date + Flight number + Airline */}
       <div className="flex flex-col sm:flex-row gap-2 mb-2">
         <div className="flex items-center gap-2 flex-1">
           <span className="font-mono-dm text-xs flex-shrink-0 w-12" style={{ color: 'var(--txt3)' }}>Fecha</span>
@@ -67,6 +67,18 @@ function FlightRow({
             className="inp inp-mono flex-1" style={{ fontSize: 13 }} />
         </div>
       </div>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="font-mono-dm text-xs flex-shrink-0 w-12" style={{ color: 'var(--txt3)' }}>Línea</span>
+        <input type="text" placeholder="ej: Iberia, Vueling, Aerolíneas Arg." value={airline || ''}
+          onChange={e => onAirline(e.target.value)}
+          className="inp flex-1" style={{ fontSize: 13 }} list="airlines-list" />
+      </div>
+      <datalist id="airlines-list">
+        <option value="Aerolíneas Argentinas" /><option value="Iberia" /><option value="Air Europa" />
+        <option value="Vueling" /><option value="Ryanair" /><option value="easyJet" />
+        <option value="ITA Airways" /><option value="Air France" /><option value="British Airways" />
+        <option value="Level" /><option value="Wizz Air" /><option value="Transavia" />
+      </datalist>
 
       {/* Direct / with stop toggle */}
       <label className="flex items-center gap-2 mb-2 cursor-pointer select-none">
@@ -207,6 +219,7 @@ export default function Vuelos() {
   const links = state?.flightLinks || {};
   const depTimes = state?.flightDepTimes || {};
   const numbers = state?.flightNumbers || {};
+  const airlines = state?.flightAirlines || {};
   const hasStop = state?.flightHasStop || {};
   const stops = state?.flightStops || {};
   const finalArr = state?.flightFinalArrival || {};
@@ -274,6 +287,7 @@ export default function Vuelos() {
               savedLink={links[f.id] || ''}
               depTime={depTimes[f.id] || ''}
               flightNum={numbers[f.id] || ''}
+              airline={airlines[f.id] || ''}
               hasStop={!!hasStop[f.id]}
               stops={stops[f.id] || []}
               finalArrTime={finalArr[f.id] || ''}
@@ -282,6 +296,7 @@ export default function Vuelos() {
               onLink={v => set('flightLinks', f.id, v)}
               onDepTime={v => set('flightDepTimes', f.id, v)}
               onFlightNum={v => set('flightNumbers', f.id, v)}
+              onAirline={v => set('flightAirlines', f.id, v)}
               onToggleStop={v => toggleStop(f.id, v)}
               onStopChange={(idx, field, val) => updateStop(f.id, idx, field, val)}
               onAddStop={() => addStop(f.id)}

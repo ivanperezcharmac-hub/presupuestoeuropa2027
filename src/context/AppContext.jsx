@@ -14,6 +14,7 @@ function initState(raw = {}) {
   if (!s.flightHasStop || typeof s.flightHasStop !== 'object') s.flightHasStop = {};
   if (!s.flightStops || typeof s.flightStops !== 'object') s.flightStops = {};
   if (!s.flightFinalArrival || typeof s.flightFinalArrival !== 'object') s.flightFinalArrival = {};
+  if (!s.flightAirlines || typeof s.flightAirlines !== 'object') s.flightAirlines = {};
   if (!s.cities || typeof s.cities !== 'object') s.cities = {};
   if (!s.accom || typeof s.accom !== 'object') s.accom = {};
   if (!s.extras || typeof s.extras !== 'object') s.extras = {};
