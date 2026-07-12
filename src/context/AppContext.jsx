@@ -95,6 +95,7 @@ export function AppProvider({ children }) {
   const [eurUsd, setEurUsd] = useState(1.165);
   const [eurUsdUpdatedAt, setEurUsdUpdatedAt] = useState(null);
   const [gbpUsd, setGbpUsd] = useState(1.34);
+  const [usdArs, setUsdArs] = useState(1450); // BNA minorista venta
   const [darkMode, setDarkMode] = useState(false);
   const saveTimer = useRef(null);
 
@@ -160,6 +161,25 @@ export function AppProvider({ children }) {
       const cachedGbp = readCache('europa2027_gbp_rate');
       if (cachedGbp?.rate) setGbpUsd(cachedGbp.rate);
     })();
+    // USD/ARS — dólar oficial minorista (BNA) via dolarapi, fallback ArgentinaDatos
+    const arsApis = [
+      () => fetch('https://dolarapi.com/v1/dolares/oficial').then(r => r.json()).then(d => d?.venta),
+      () => fetch('https://api.argentinadatos.com/v1/cotizaciones/dolares/oficial').then(r => r.json()).then(d => Array.isArray(d) ? d[d.length - 1]?.venta : null),
+    ];
+    (async () => {
+      for (const api of arsApis) {
+        try {
+          const rate = await api();
+          if (rate && rate > 100 && rate < 100000) {
+            setUsdArs(rate);
+            writeCache('europa2027_ars_rate', { rate, updatedAt: new Date().toISOString() });
+            return;
+          }
+        } catch { continue; }
+      }
+      const cachedArs = readCache('europa2027_ars_rate');
+      if (cachedArs?.rate) setUsdArs(cachedArs.rate);
+    })();
   }, []);
 
   useEffect(() => {
@@ -211,7 +231,7 @@ export function AppProvider({ children }) {
   }, [setState]);
 
   return (
-    <AppContext.Provider value={{ state, setState, loading, syncStatus, eurUsd, setEurUsd, eurUsdUpdatedAt, gbpUsd, darkMode, toggleDark }}>
+    <AppContext.Provider value={{ state, setState, loading, syncStatus, eurUsd, setEurUsd, eurUsdUpdatedAt, gbpUsd, usdArs, darkMode, toggleDark }}>
       {children}
     </AppContext.Provider>
   );
