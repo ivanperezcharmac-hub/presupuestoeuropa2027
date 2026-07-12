@@ -95,7 +95,7 @@ export function AppProvider({ children }) {
   const [eurUsd, setEurUsd] = useState(1.165);
   const [eurUsdUpdatedAt, setEurUsdUpdatedAt] = useState(null);
   const [gbpUsd, setGbpUsd] = useState(1.34);
-  const [usdArs, setUsdArs] = useState(1450); // BNA minorista venta
+  const [usdArs, setUsdArs] = useState(1450); // BNA minorista compra
   const [darkMode, setDarkMode] = useState(false);
   const saveTimer = useRef(null);
 
@@ -163,8 +163,8 @@ export function AppProvider({ children }) {
     })();
     // USD/ARS — dólar oficial minorista (BNA) via dolarapi, fallback ArgentinaDatos
     const arsApis = [
-      () => fetch('https://dolarapi.com/v1/dolares/oficial').then(r => r.json()).then(d => d?.venta),
-      () => fetch('https://api.argentinadatos.com/v1/cotizaciones/dolares/oficial').then(r => r.json()).then(d => Array.isArray(d) ? d[d.length - 1]?.venta : null),
+      () => fetch('https://dolarapi.com/v1/dolares/oficial').then(r => r.json()).then(d => d?.compra),
+      () => fetch('https://api.argentinadatos.com/v1/cotizaciones/dolares/oficial').then(r => r.json()).then(d => Array.isArray(d) ? d[d.length - 1]?.compra : null),
     ];
     (async () => {
       for (const api of arsApis) {
