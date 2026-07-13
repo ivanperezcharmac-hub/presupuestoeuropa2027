@@ -1,6 +1,12 @@
 import { useApp, f$ } from '../context/AppContext';
 import { INTL_FLIGHTS, EURO_FLIGHTS } from '../data/constants';
 
+const AIRLINES = [
+  'Aerolíneas Argentinas', 'Iberia', 'Air Europa', 'Vueling',
+  'Ryanair', 'easyJet', 'ITA Airways', 'Air France',
+  'British Airways', 'Eurostar',
+];
+
 function googleFlightsUrl(from, to, dateISO) {
   return `https://www.google.com/travel/flights?q=${encodeURIComponent(`vuelos de ${from} a ${to} el ${dateISO}`)}`;
 }
@@ -70,9 +76,11 @@ function FlightRow({
       </div>
       <div className="flex items-center gap-2 mb-2">
         <span className="font-mono-dm text-xs flex-shrink-0 w-12" style={{ color: 'var(--txt3)' }}>Línea</span>
-        <input type="text" placeholder="ej: Iberia, Vueling, Aerolíneas Arg." value={airline || ''}
-          onChange={e => onAirline(e.target.value)}
-          className="inp flex-1" style={{ fontSize: 13 }} list="airlines-list" />
+        <select value={airline || ''} onChange={e => onAirline(e.target.value)}
+          className="inp flex-1" style={{ fontSize: 13 }}>
+          <option value="">— Elegir —</option>
+          {AIRLINES.map(a => <option key={a} value={a}>{a}</option>)}
+        </select>
       </div>
 
       {/* Direct / with stop toggle */}
@@ -255,13 +263,6 @@ export default function Vuelos() {
 
   return (
     <div className="fade-in">
-      <datalist id="airlines-list">
-        <option value="Aerolíneas Argentinas" /><option value="Iberia" /><option value="Air Europa" />
-        <option value="Vueling" /><option value="Ryanair" /><option value="easyJet" />
-        <option value="ITA Airways" /><option value="Air France" /><option value="British Airways" />
-        <option value="Level" /><option value="Wizz Air" /><option value="Transavia" />
-        <option value="Eurostar" /><option value="LATAM" /><option value="KLM" /><option value="Lufthansa" />
-      </datalist>
       <h1 className="font-display text-2xl font-bold mb-1">Vuelos</h1>
       <p className="text-sm mb-3" style={{ color: 'var(--txt2)' }}>
         Anotá fecha, número de vuelo y hora de salida. Si tiene escala, activá el switch y agregá los detalles.

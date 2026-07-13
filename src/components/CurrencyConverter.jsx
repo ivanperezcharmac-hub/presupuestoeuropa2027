@@ -9,8 +9,8 @@ function timeAgo(date) {
 }
 
 const CURRENCIES = {
-  eur: { code: 'EUR', symbol: '€' },
-  gbp: { code: 'GBP', symbol: '£' },
+  eur: { flag: '🇪🇺', code: 'EUR', symbol: '€' },
+  gbp: { flag: '🇬🇧', code: 'GBP', symbol: '£' },
 };
 
 function fmtArs(n) {
@@ -130,15 +130,14 @@ export default function CurrencyConverter() {
                     cursor: 'pointer',
                     minHeight: 34,
                   }}>
-                  <span style={{ fontSize: 14 }}>{c.symbol}</span> {c.code}
+                  <span style={{ fontSize: 14 }}>{c.flag}</span> {c.code}
                 </button>
               ))}
             </div>
 
             {/* EUR/GBP */}
             <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-2" style={rowStyle(true)}>
-              <span className="flex items-center justify-center rounded-full font-bold flex-shrink-0"
-                style={{ width: 26, height: 26, fontSize: 14, background: 'var(--blue)', color: '#fff' }}>{cur.symbol}</span>
+              <span style={{ fontSize: 18, lineHeight: 1 }}>{cur.flag}</span>
               <input type="number" inputMode="decimal" placeholder="0.00"
                 value={srcVal} onChange={e => { setSrcVal(e.target.value); recompute('src', e.target.value); }}
                 className="flex-1 font-mono-dm font-bold text-right outline-none"
@@ -148,8 +147,7 @@ export default function CurrencyConverter() {
 
             {/* USD */}
             <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-2" style={rowStyle(false)}>
-              <span className="flex items-center justify-center rounded-full font-bold flex-shrink-0"
-                style={{ width: 26, height: 26, fontSize: 14, background: 'var(--txt3)', color: '#fff' }}>$</span>
+              <span style={{ fontSize: 18, lineHeight: 1 }}>🇺🇸</span>
               <input type="number" inputMode="decimal" placeholder="0.00"
                 value={usdVal} onChange={e => { setUsdVal(e.target.value); recompute('usd', e.target.value); }}
                 className="flex-1 font-mono-dm font-bold text-right outline-none"
@@ -159,8 +157,7 @@ export default function CurrencyConverter() {
 
             {/* ARS */}
             <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-3" style={rowStyle(false)}>
-              <span className="flex items-center justify-center rounded-full font-bold flex-shrink-0"
-                style={{ width: 26, height: 26, fontSize: 11, background: 'var(--gold)', color: '#fff' }}>AR</span>
+              <span style={{ fontSize: 18, lineHeight: 1 }}>🇦🇷</span>
               <input type="text" inputMode="numeric" placeholder="0"
                 value={arsVal} onChange={e => {
                   const raw = e.target.value.replace(/\./g, '');
