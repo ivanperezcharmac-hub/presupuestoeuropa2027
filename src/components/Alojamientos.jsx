@@ -4,7 +4,7 @@ import { CITIES } from '../data/constants';
 
 const TIPOS = ['','Airbnb','Hotel','Hostel','Apartamento','B&B','Otro'];
 
-function empty() { return { name:'',type:'',price:'',link:'',zona:'',notes:'',tel:'',dir:'' }; }
+function empty() { return { name:'',type:'',price:'',total:'',link:'',zona:'',notes:'',tel:'',dir:'' }; }
 
 export default function Alojamientos() {
   const { state, setState } = useApp();
@@ -36,7 +36,9 @@ export default function Alojamientos() {
         const days = cityDays(state, city.id);
         const curTab = tabs[city.id] ?? 0;
         const chosen = ac.chosen;
-        const chosenPrice = parseFloat(ac.opts[chosen]?.price) || 0;
+        const chosenOpt = ac.opts[chosen] || {};
+        const chosenTotal = parseFloat(chosenOpt.total) || (parseFloat(chosenOpt.price) || 0) * days;
+        const chosenPrice = days > 0 ? chosenTotal / days : 0;
 
         return (
           <div key={city.id} className="rounded-2xl p-4 mb-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--sh)' }}>
@@ -47,7 +49,7 @@ export default function Alojamientos() {
               </div>
               {chosen >= 0 && chosenPrice > 0 && (
                 <span className="tag tag-green">
-                  Opción {'ABC'[chosen]} — {f$(chosenPrice)}/noche
+                  Opción {'ABC'[chosen]} — {f$(chosenTotal)} ({f$(chosenPrice)}/noche)
                 </span>
               )}
             </div>
@@ -67,7 +69,8 @@ export default function Alojamientos() {
             {[0,1,2].map(i => {
               if (i !== curTab) return null;
               const o = ac.opts[i] || empty();
-              const price = parseFloat(o.price) || 0;
+              const total = parseFloat(o.total) || (parseFloat(o.price) || 0) * days;
+              const perNight = days > 0 ? total / days : 0;
               const isChosen = chosen === i;
               return (
                 <div key={i}>
@@ -85,8 +88,8 @@ export default function Alojamientos() {
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs font-semibold uppercase tracking-wider block mb-1" style={{ color: 'var(--muted)' }}>Precio/noche (USD)</label>
-                      <input type="number" placeholder="0" min="0" value={o.price} onChange={e => updateOpt(city.id, i, 'price', e.target.value)}
+                      <label className="text-xs font-semibold uppercase tracking-wider block mb-1" style={{ color: 'var(--muted)' }}>Precio TOTAL estadía (USD)</label>
+                      <input type="number" placeholder="0" min="0" value={o.total} onChange={e => updateOpt(city.id, i, 'total', e.target.value)}
                         className="w-full px-3 py-1.5 rounded-lg text-sm font-mono-dm outline-none" style={{ border: '1.5px solid var(--border)', background: 'var(--surface2)', color: 'var(--txt)' }} />
                     </div>
                     <div>
@@ -116,7 +119,7 @@ export default function Alojamientos() {
                       style={{ background: isChosen ? 'var(--grn)' : 'transparent', color: isChosen ? '#fff' : 'var(--muted)', border: `1.5px solid ${isChosen ? 'var(--grn)' : 'var(--border)'}` }}>
                       {isChosen ? '✓ Opción elegida' : 'Elegir esta opción'}
                     </button>
-                    {price > 0 && <span className="font-mono-dm text-sm" style={{ color: 'var(--txt)' }}>{f$(price * days)} total ({days}n × ${price})</span>}
+                    {total > 0 && <span className="font-mono-dm text-sm" style={{ color: 'var(--txt)' }}>{f$(total)} total → {f$(perNight)}/noche ({days}n)</span>}
                     {o.link && <a href={o.link} target="_blank" rel="noreferrer" className="text-xs" style={{ color: 'var(--blue)' }}>Abrir link ↗</a>}
                     {o.tel && (
                       <>

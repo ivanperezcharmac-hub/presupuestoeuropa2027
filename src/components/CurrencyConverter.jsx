@@ -63,7 +63,7 @@ export default function CurrencyConverter() {
     else usd = n / usdArs;
     if (from !== 'src') setSrcVal((usd / rate).toFixed(2));
     if (from !== 'usd') setUsdVal(usd.toFixed(2));
-    if (from !== 'ars') setArsVal((usd * usdArs).toFixed(0));
+    if (from !== 'ars') setArsVal((usd * usdArs).toLocaleString('es-AR', { maximumFractionDigits: 0 }));
   }
 
   // Al cambiar moneda o tasas, recalcular desde el último editado
@@ -99,7 +99,7 @@ export default function CurrencyConverter() {
             right: 16,
             bottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 60px)',
             width: 244,
-            maxHeight: 'calc(100dvh - 160px)',
+            maxHeight: 'calc(100dvh - 220px - env(safe-area-inset-top, 0px))',
             overflowY: 'auto',
             background: 'var(--surface)',
             border: '1px solid var(--border2)',
@@ -157,8 +157,14 @@ export default function CurrencyConverter() {
             {/* ARS */}
             <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-3" style={rowStyle(false)}>
               <span style={{ fontSize: 18, lineHeight: 1 }}>🇦🇷</span>
-              <input type="number" inputMode="decimal" placeholder="0"
-                value={arsVal} onChange={e => { setArsVal(e.target.value); recompute('ars', e.target.value); }}
+              <input type="text" inputMode="numeric" placeholder="0"
+                value={arsVal} onChange={e => {
+                  const raw = e.target.value.replace(/\./g, '');
+                  if (raw !== '' && isNaN(parseFloat(raw))) return;
+                  const formatted = raw === '' ? '' : parseFloat(raw).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+                  setArsVal(formatted);
+                  recompute('ars', raw);
+                }}
                 className="flex-1 font-mono-dm font-bold text-right outline-none"
                 style={{ fontSize: 17, background: 'transparent', color: 'var(--txt)', border: 'none', minWidth: 0 }} />
               <span className="font-mono-dm font-semibold" style={{ fontSize: 11, color: 'var(--txt3)', flexShrink: 0 }}>ARS</span>

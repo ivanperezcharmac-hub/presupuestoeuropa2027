@@ -33,7 +33,8 @@ function FlightRow({
   onPrice, onDate, onLink, onDepTime, onFlightNum, onToggleStop, onStopChange, onAddStop, onRemoveStop, onFinalArrTime,
 }) {
   const priceOk = parseFloat(price) > 0;
-  const googleUrl = googleFlightsUrl(flight.from, flight.to, dateISO);
+  const isTrain = flight.mode === 'train';
+  const searchUrl = isTrain ? 'https://www.eurostar.com/es-es' : googleFlightsUrl(flight.from, flight.to, dateISO);
   const arrival = hasStop ? null : computeArrival(depTime, flight.durationMin, flight.tzFrom, flight.tzTo);
 
   return (
@@ -43,13 +44,13 @@ function FlightRow({
         <div className="min-w-0">
           <div className="font-medium text-sm">{flight.route}</div>
           <div className="text-xs italic mt-0.5" style={{ color: 'var(--txt3)' }}>
-            {flight.note} · {formatDuration(flight.durationMin)} en vuelo directo
+            {flight.note} · {formatDuration(flight.durationMin)} {isTrain ? 'de viaje' : 'en vuelo directo'}
           </div>
         </div>
-        <a href={googleUrl} target="_blank" rel="noreferrer"
+        <a href={searchUrl} target="_blank" rel="noreferrer"
           className="flex-shrink-0 flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg whitespace-nowrap"
           style={{ color: 'var(--blue)', background: 'rgba(27,79,216,0.08)' }}>
-          ↗ Flights
+          {isTrain ? '↗ Eurostar' : '↗ Flights'}
         </a>
       </div>
 
@@ -61,8 +62,8 @@ function FlightRow({
             className="inp inp-mono flex-1" style={{ fontSize: 13 }} />
         </div>
         <div className="flex items-center gap-2 flex-1">
-          <span className="font-mono-dm text-xs flex-shrink-0 w-12" style={{ color: 'var(--txt3)' }}>Vuelo #</span>
-          <input type="text" placeholder="ej: IB6844" value={flightNum || ''}
+          <span className="font-mono-dm text-xs flex-shrink-0 w-12" style={{ color: 'var(--txt3)' }}>{isTrain ? 'Tren #' : 'Vuelo #'}</span>
+          <input type="text" placeholder={isTrain ? 'ej: ES9032' : 'ej: IB6844'} value={flightNum || ''}
             onChange={e => onFlightNum(e.target.value.toUpperCase())}
             className="inp inp-mono flex-1" style={{ fontSize: 13 }} />
         </div>

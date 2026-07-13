@@ -43,11 +43,12 @@ export const EURO_FLIGHTS = [
     departsCity: "roma", arrivesCity: "paris",
   },
   {
-    id: "par-lon", route: "París → Londres (LHR)",
-    from: "CDG", to: "LHR", defDate: "2027-04-01",
-    note: "easyJet, Vueling",
-    durationMin: 80, tzFrom: 2, tzTo: 1,
+    id: "par-lon", route: "París → Londres (Eurostar 🚄)",
+    from: "Gare du Nord", to: "St Pancras", defDate: "2027-04-01",
+    note: "Eurostar · tren directo centro a centro",
+    durationMin: 135, tzFrom: 2, tzTo: 1,
     departsCity: "paris", arrivesCity: "londres",
+    mode: "train",
   },
   {
     id: "lon-mad", route: "Londres → Madrid",
