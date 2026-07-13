@@ -74,12 +74,6 @@ function FlightRow({
           onChange={e => onAirline(e.target.value)}
           className="inp flex-1" style={{ fontSize: 13 }} list="airlines-list" />
       </div>
-      <datalist id="airlines-list">
-        <option value="Aerolíneas Argentinas" /><option value="Iberia" /><option value="Air Europa" />
-        <option value="Vueling" /><option value="Ryanair" /><option value="easyJet" />
-        <option value="ITA Airways" /><option value="Air France" /><option value="British Airways" />
-        <option value="Level" /><option value="Wizz Air" /><option value="Transavia" />
-      </datalist>
 
       {/* Direct / with stop toggle */}
       <label className="flex items-center gap-2 mb-2 cursor-pointer select-none">
@@ -261,6 +255,13 @@ export default function Vuelos() {
 
   return (
     <div className="fade-in">
+      <datalist id="airlines-list">
+        <option value="Aerolíneas Argentinas" /><option value="Iberia" /><option value="Air Europa" />
+        <option value="Vueling" /><option value="Ryanair" /><option value="easyJet" />
+        <option value="ITA Airways" /><option value="Air France" /><option value="British Airways" />
+        <option value="Level" /><option value="Wizz Air" /><option value="Transavia" />
+        <option value="Eurostar" /><option value="LATAM" /><option value="KLM" /><option value="Lufthansa" />
+      </datalist>
       <h1 className="font-display text-2xl font-bold mb-1">Vuelos</h1>
       <p className="text-sm mb-3" style={{ color: 'var(--txt2)' }}>
         Anotá fecha, número de vuelo y hora de salida. Si tiene escala, activá el switch y agregá los detalles.
